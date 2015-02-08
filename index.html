@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Leaflet extension for remote GeoJSON layers</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" type="image/png" href="http://leafletjs.com/docs/images/favicon.png" />
+
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+	<script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+
+	<link rel="stylesheet" href="http://erictheise.github.io/rrose/stylesheets/leaflet.rrose.css" />
+	<script type="text/javascript" src="http://erictheise.github.io/rrose/javascripts/rrose-src.js"></script>
+
+	<link type="text/css" rel="stylesheet" href="GeoJSON.Ajax.css" />
+	<script type="text/javascript" src="GeoJSON.Ajax.js"></script>
+
+	<script type="text/javascript">
+		window.addEventListener('load', function() {
+			map = new L.Map('map', {
+				center: new L.LatLng(46.8, 2),
+				zoom: 6,
+				layers: [
+					new L.TileLayer('http://maps.refuges.info/hiking/{z}/{x}/{y}.png', {
+						attribution: '&copy; <a href="http://osm.org/copyright">Contributeurs OpenStreetMap</a> & <a href="http://wiki.openstreetmap.org/wiki/Hiking/mri">MRI</a>'
+					}),
+					new L.GeoJSON.Ajax(
+						'http://www.refuges.info/api/polygones', {
+							argsGeoJSON: {
+								type_polygon: 1
+							},
+							url: function(feature) {
+								return feature.properties.lien;
+							},
+							style: function(feature) {
+								return {
+									color: feature.properties.couleur,
+									weight: 2,
+									opacity: 0.5,
+									editSnapable: true
+								}
+							}
+						}
+					),
+					new L.GeoJSON.Ajax(
+						'http://www.refuges.info/api/bbox', {
+							argsGeoJSON: {
+								type_points: 'all'
+							},
+							bbox: true,
+							url: function(feature) {
+								return 'http://www.refuges.info/point/' + feature.properties.id;
+							},
+							icon: function(feature) {
+								return {
+									url: 'http://www.refuges.info/images/icones/' + feature.properties.type.icone + '.png'
+								}
+							},
+							editSnapable: true
+						}
+					)
+				]
+			});
+		});
+	</script>
+</head>
+
+<body>
+	<div id="map" style="width: 800px; height: 600px"></div>
+</body>
+</html>

@@ -1,0 +1,10 @@
+/* Popups plus petits */
+.leaflet-rrose-content {
+	margin: 2px 5px;
+}
+.leaflet-rrose-tip {
+	height: 10px;
+}
+.leaflet-rrose-tip-container {
+	height: 6px;
+}

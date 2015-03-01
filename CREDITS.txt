@@ -1,1 +1,0 @@
-https://github.com/Dominique92/Leaflet.GeoJSON.Ajax

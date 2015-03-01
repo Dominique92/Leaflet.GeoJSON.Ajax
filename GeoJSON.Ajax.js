@@ -1,8 +1,9 @@
 /*
  * Copyright (c) 2014 Dominique Cavailhez
- * Layer affichant des features obtenus en format JSON
+ * Display remote layers with geoJSON format
  *
- * Spécifications geoJSON: http://geojson.org/geojson-spec.html
+ * geoJSON Spécifications: http://geojson.org/geojson-spec.html
+ * With the great help of https://github.com/LeOSW42
  */
 
 L.GeoJSON.Ajax = L.GeoJSON.extend({
@@ -30,7 +31,7 @@ L.GeoJSON.Ajax = L.GeoJSON.extend({
 		L.Util.extend(this.options.argsGeoJSON, argsGeoJSON); // On change éventuellement quelque chose
 
 		// On prépare l'adresse à télécharger, avec la bbox.
-		if (this.options.bbox) { // Les quatres angles de la vue courante (bbox à télécharger)
+		if (this.options.bbox && this._map) { // Les quatres angles de la vue courante (bbox à télécharger)
 			var bounds = this._map.getBounds();
 			if (bounds) {
 				var minll = bounds.getSouthWest();
@@ -70,7 +71,8 @@ L.GeoJSON.Ajax = L.GeoJSON.extend({
 	redraw: function(geojson) {
 		// On vide la couche
 		for (l in this._layers)
-			this._map.removeLayer(this._layers[l]);
+			if (this._map)
+				this._map.removeLayer(this._layers[l]);
 
 		// On recharge les nouveaux features
 		try {

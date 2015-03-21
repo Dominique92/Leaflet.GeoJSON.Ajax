@@ -2,16 +2,18 @@
 <html>
 <head>
 	<title>Leaflet extension for remote GeoJSON layers</title>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- Leaflet kernel -->
 	<link rel="icon" type="image/png" href="http://leafletjs.com/docs/images/favicon.png" />
-
+	<!-- TODO ?? link href="http://leafletjs.com/atom.xml" type="application/atom+xml" rel="alternate" title="Leaflet Dev Blog Atom Feed" /-->
 	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
-	<script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+	<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 
+	<!-- Embeded pluggin -->
 	<link rel="stylesheet" href="http://erictheise.github.io/rrose/stylesheets/leaflet.rrose.css" />
 	<script type="text/javascript" src="http://erictheise.github.io/rrose/javascripts/rrose-src.js"></script>
 
+	<!-- Embeded pluggin -->
 	<link type="text/css" rel="stylesheet" href="GeoJSON.Ajax.css" />
 	<script type="text/javascript" src="GeoJSON.Ajax.js"></script>
 
@@ -48,6 +50,7 @@
 								type_points: 'all'
 							},
 							bbox: true,
+							degroup: 12,
 							url: function(feature) {
 								return 'http://www.refuges.info/point/' + feature.properties.id;
 							},

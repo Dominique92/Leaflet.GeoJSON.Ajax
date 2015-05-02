@@ -4,9 +4,11 @@ Leaflet.GeoJSON.Ajax
 Leaflet extension for remote GeoJSON layers (Markers, Polylines, Polygons, ...) using AJAX.
 Get the list of features from a remote <URL> & display it into the map with related & parametrables markers, lines & polygons.
 
-[Check out the DEMO] (http://dominique92.github.io/MyLeaflet/github.com/Dominique92/Leaflet.GeoJSON.Ajax/) !
-
 It depends on [Leaflet.Rrose](https://github.com/erictheise/rrose).
+
+DEMO
+----
+[See a DEMO](http://dominique92.github.io/MyLeaflet/github.com/Dominique92/Leaflet.GeoJSON.Ajax/)
 
 Usage
 -----

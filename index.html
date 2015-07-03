@@ -31,8 +31,8 @@
 							argsGeoJSON: {
 								type_polygon: 1
 							},
-							url: function(feature) {
-								return feature.properties.lien;
+							url: function(target) {
+								return target.feature.properties.lien;
 							},
 							style: function(feature) {
 								return {
@@ -51,8 +51,8 @@
 							},
 							bbox: true,
 							degroup: 12,
-							url: function(feature) {
-								return 'http://www.refuges.info/point/' + feature.properties.id;
+							url: function(target) {
+								return 'http://www.refuges.info/point/' + target.feature.properties.id;
 							},
 							icon: function(feature) {
 								return {

@@ -147,7 +147,7 @@ L.GeoJSON.Ajax = L.GeoJSON.extend({
 						closeButton: false,
 						autoPan: false
 					})
-					.setContent(feature.properties.nom)
+					.setContent(feature.properties.nom) // TODO: ce serait préférable de mettre nom mais ruprure d'interface WRI
 					.setLatLng(e.latlng)
 					.openOn(this._map);
 			});

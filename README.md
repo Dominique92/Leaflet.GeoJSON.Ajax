@@ -24,7 +24,7 @@ Create a L.GeoJSON.Ajax instance & add it to the map.
 ...
 ```
 
-### <URL> returns the features in a [geoJson format](http://geojson.org/geojson-spec.html)
+### <URL> The serveur must return the features in a [geoJson format](http://geojson.org/geojson-spec.html)
 ```javascript
 ...
 	{
@@ -34,7 +34,7 @@ Create a L.GeoJSON.Ajax instance & add it to the map.
 			"type": "Feature",
 			"id": 3386,
 			"properties":
-				{"id":3386,"id_gps":89436,"nom":"Pas de l'Oeille","coord":{"long":"5.85426","lat":"45.30931","alt":2026},"type":{"id":3,"valeur":"point de passage","icone":"point-de-passage"},"places":{"nom":"","valeur":0},"etat":{"id":null,"valeur":""},"date":{"derniere_modif":"2011-09-17 00:00:00"},"coms":{"nb":0}},
+				{"id":3386,"id_gps":89436,"nom":"Pas de l'Oeille","coord":{"long":"5.85426","lat":"45.30931","alt":2026},"type":{"id":3,"valeur":"point de passage","icone":"point-de-passage"},"places":{"name":"","valeur":0},"etat":{"id":null,"valeur":""},"date":{"derniere_modif":"2011-09-17 00:00:00"},"coms":{"nb":0}},
 			"geometry": {
 				"type": "Point",
 				"coordinates": [

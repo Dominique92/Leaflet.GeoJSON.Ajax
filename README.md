@@ -5,6 +5,7 @@ Leaflet extension for remote GeoJSON layers (Markers, Polylines, Polygons, ...) 
 Get the list of features from a remote <URL> & display it into the map with related & parametrables markers, lines & polygons.
 
 It depends on [Leaflet.Rrose](https://github.com/erictheise/rrose).
+This plugin works both on Leaflet V0.7.x & V1.0
 
 DEMO
 ----

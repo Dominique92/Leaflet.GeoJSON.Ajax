@@ -1,19 +1,20 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
 <head>
 	<title>Leaflet extension for remote GeoJSON layers</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
 	<!-- Leaflet kernel -->
-	<link rel="icon" type="image/png" href="http://leafletjs.com/docs/images/favicon.png" />
+	<link rel="icon" type="image/png" href="http://leafletjs.com/docs/images/favicon.ico" />
 	<!-- TODO ?? link href="http://leafletjs.com/atom.xml" type="application/atom+xml" rel="alternate" title="Leaflet Dev Blog Atom Feed" /-->
-	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
-	<script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+	<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
 
-	<!-- Embeded pluggin -->
+	<!-- Erictheise.rrose pluggin -->
 	<link rel="stylesheet" href="http://erictheise.github.io/rrose/stylesheets/leaflet.rrose.css" />
-	<script type="text/javascript" src="http://erictheise.github.io/rrose/javascripts/rrose-src.js"></script>
+	<script type="text/javascript" src="http://erictheise.github.io/rrose/javascripts/leaflet.rrose-src.js"></script>
 
-	<!-- Embeded pluggin -->
+	<!-- This pluggin -->
 	<link type="text/css" rel="stylesheet" href="GeoJSON.Ajax.css" />
 	<script type="text/javascript" src="GeoJSON.Ajax.js"></script>
 
@@ -38,8 +39,7 @@
 								return {
 									color: feature.properties.couleur,
 									weight: 2,
-									opacity: 0.5,
-									editSnapable: true
+									opacity: 0.5
 								}
 							}
 						}
@@ -56,10 +56,10 @@
 							},
 							icon: function(feature) {
 								return {
-									url: 'http://www.refuges.info/images/icones/' + feature.properties.type.icone + '.png'
+									url: 'http://www.refuges.info/images/icones/' + feature.properties.type.icone + '.png',
+									size: 16
 								}
-							},
-							editSnapable: true
+							}
 						}
 					)
 				]

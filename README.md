@@ -77,7 +77,8 @@ Create a L.GeoJSON.Ajax instance & add it to the map.
 			},
 			icon: function(feature) {
 				return {
-					url: 'http://www.refuges.info/images/icones/' + feature.properties.type.icone + '.png'
+					url: 'http://www.refuges.info/images/icones/' + feature.properties.type.icone + '.png',
+					size: 16
 				}
 			},
 			url: function(feature) {

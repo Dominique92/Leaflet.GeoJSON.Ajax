@@ -71,23 +71,23 @@ Create a L.GeoJSON.Ajax instance & add it to the map.
 ### FULL EXAMPLE:
 ```javascript
 ...
-	new L.GeoJSON.Ajax(
-		'http://www.refuges.info/api/bbox', {
-			argsGeoJSON: {
-				type_points: 'all'
-			},
-			icon: function(feature) {
-				return {
-					url: 'http://www.refuges.info/images/icones/' + feature.properties.type.icone + '.png',
-					size: 16
-				}
-			},
-			url: function(feature) {
-				return 'http://www.refuges.info/point/' + feature.properties.id;
-			},
-			bbox: true,
-			degroup: 12
+new L.GeoJSON.Ajax(
+	'http://www.refuges.info/api/bbox', {
+		argsGeoJSON: {
+			type_points: 'all'
+		},
+		bbox: true,
+		degroup: 12,
+		url: function(target) {
+			return 'http://www.refuges.info/point/' + target.feature.properties.id;
+		},
+		icon: function(feature) {
+			return {
+				url: 'http://www.refuges.info/images/icones/' + feature.properties.type.icone + '.png',
+				size: 16
+			}
 		}
-	).addTo(map);
+	}
+).addTo(map);
 ...
 ```

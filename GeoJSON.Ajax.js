@@ -13,77 +13,63 @@ L.GeoJSON.Ajax = L.GeoJSON.extend({
 		if (urlGeoJSON)
 			options.urlGeoJSON = urlGeoJSON;
 
-		// On initialise L.GeoJSON mais sans contenu puisqu'on ne l'obtiendra que plus tard par AJAX
+		// L.GeoJSON init with blank content as we will get it later.
 		L.GeoJSON.prototype.initialize.call(this, null, options);
 	},
 
 	onAdd: function(map) {
 		L.GeoJSON.prototype.onAdd.call(this, map);
 
-		// Quand on bouge une carte avec bbox, il faut recharger le geoJSON à chaque fois
+		// If BBOX, reload the geoJSON from the server each time the map moves/zoom.
 		if (this.options.bbox)
 			map.on('moveend', this.reload, this);
 
-		// De toute façon, il faut charger au début
+		// Anyway, we need to load it at the beginning.
 		this.reload();
 	},
 
-	reload: function(argsGeoJSON) {
-		L.Util.extend(this.options.argsGeoJSON, argsGeoJSON); // On change éventuellement quelque chose
-
-		// On prépare l'adresse à télécharger, avec la bbox.
-		if (this.options.bbox && this._map) { // Les quatres angles de la vue courante (bbox à télécharger)
-			var bounds = this._map.getBounds();
-			if (bounds) {
-				var minll = bounds.getSouthWest();
-				var maxll = bounds.getNorthEast();
-				this.options.argsGeoJSON['bbox'] = minll.lng + ',' + minll.lat + ',' + maxll.lng + ',' + maxll.lat;
-			}
+	reload: function() {
+		// Prepare the BBOX url options.
+		if (this.options.bbox && this._map) {
+			var bounds = this._map.getBounds(),
+				minll = bounds.getSouthWest(),
+				maxll = bounds.getNorthEast();
+			this.options.argsGeoJSON['bbox'] = minll.lng + ',' + minll.lat + ',' + maxll.lng + ',' + maxll.lat;
 		}
-		this.args = '';
-		if (this.options.argsGeoJSON)
-			for (a in this.options.argsGeoJSON)
-				if (this.options.argsGeoJSON[a])
-					this.args += (this.args ? '&' : '?') + a + '=' + this.options.argsGeoJSON[a];
 
-		// On prépare (une fois) l'objet request
-		if (!this.ajaxRequest) {
+		// We prepare the Request object
+		if (!this.ajaxRequest) { // Only once.
 			if (window.XMLHttpRequest)
 				this.ajaxRequest = new XMLHttpRequest();
 			else if (window.ActiveXObject)
 				this.ajaxRequest = new ActiveXObject('Microsoft.XMLHTTP');
 			else {
-				alert('Ce navigateur ne supporte pas les requettes AJAX.');
+				alert("Your browser doesn't support AJAX requests.");
 				exit;
 			}
-			this.ajaxRequest.context = this; // On mémorise le contexte
+			this.ajaxRequest.context = this; // Reference the layer object for further usage.
 		}
 
-		// On envoie la requete AJAX
-		this.url = this.options.proxy + this.options.urlGeoJSON + this.args;
-		if (this.url == this.actual) // TODO: Voir pourquoi le cache de l'explo n'a pas l'air de fonctionner: On refait le cache dans cette classe !
-			this.redraw(this.responseText);
-		else {
-			this.ajaxRequest.onreadystatechange = function(e) {
-				if (e.target.readyState == 4 && // Si AJAX à bien retourné ce que l'on attendait
-					e.target.status == 200) {
-					e.target.context.redraw(e.target.responseText);
-					e.target.context.actual = e.target.context.url; // On mémorise le flux demandé pour éviter de le demander plusiers fois.
-					e.target.context.responseText = e.target.responseText; // On mémorise aussi la réponse.
-				}
-			}
-			this.ajaxRequest.open('GET', this.url, true);
-			this.ajaxRequest.send(null);
+		// Process AJAX response.
+		this.ajaxRequest.onreadystatechange = function(e) {
+			if (e.target.readyState < 4) // Still in process
+				return;
+			if (e.target.status == 200)
+				e.target.context.redraw(e.target.responseText);
+			else
+				alert('ajaxRequest error status = ' + e.target.status + ' calling ' + this.options.urlGeoJSON);
 		}
+		this.ajaxRequest.open('GET', this.options.proxy + this.options.urlGeoJSON + L.Util.getParamString(this.options.argsGeoJSON), true);
+		this.ajaxRequest.send(null);
 	},
 
 	redraw: function(geojson) {
-		// On vide la couche
+		// Empty the layer.
 		for (l in this._layers)
 			if (this._map)
 				this._map.removeLayer(this._layers[l]);
 
-		// On recharge les nouveaux features
+		// Redraw new features.
 		try {
 			eval('this.addData([' + geojson + '])');
 		} catch (e) {
@@ -91,7 +77,7 @@ L.GeoJSON.Ajax = L.GeoJSON.extend({
 				alert('Json syntax error on ' + this.options.urlGeoJSON + this.args + ' :\n' + geojson);
 		}
 
-		// Référence le layer geojson et la position initiale de chacun de ses sous layers
+		// Reference the geojson layer & the initial position of each of his sublayers (for too close markers degrouping).
 		for (i in this._layers)
 			L.extend(this._layers[i], {
 				_geojson: this,
@@ -100,14 +86,14 @@ L.GeoJSON.Ajax = L.GeoJSON.extend({
 	},
 
 	options: {
-		proxy: '', // Eventuel proxy du lien du flux GeoJSON
-		urlGeoJSON: null, // Lien du flux GeoJSON
-		argsGeoJSON: {}, // Eventuels arguments du lien du flux GeoJSON
+		proxy: '', // If needed by the GeoJSON server / This can be avoided if the GeoJSON server delivers: header("Access-Control-Allow-Origin: *");
+		urlGeoJSON: null, // GeoJSON server URL.
+		argsGeoJSON: {}, // GeoJSON server args.
 
-		// On initialise quelques comportements suivant les propriétés
+		// Develop each feature:
 		onEachFeature: function(feature, layer) {
 
-			// Icône de marqueur
+			// Marker icon
 			if (this.icon) {
 				var icon = this.icon;
 				if (typeof icon === 'function')
@@ -122,25 +108,25 @@ L.GeoJSON.Ajax = L.GeoJSON.extend({
 			}
 
 			layer.on('mouseover mousemove', function(e) {
-				// Dégroupage des marqueurs trop prés au survol
+				// Too close markers degrouping.
 				if (this._geojson &&
-					this._geojson.options.degroup && // Pour les couches dont options.degroup = distance en nb de pixels
-					this._latlng.equals(this._ll_init) // On ne touche pas si déjà shifté
+					this._geojson.options.degroup && // nb de pixels.
+					this._latlng.equals(this._ll_init) // Only once.
 				) {
-					var xysi = this._map.latLngToLayerPoint(this._ll_init), // XY point survolé
+					var xysi = this._map.latLngToLayerPoint(this._ll_init), // XY point overflown.
 						dm = this._geojson.options.degroup;
 					for (p in this._geojson._layers) {
-						var point = this._geojson._layers[p]; // Les autres points
+						var point = this._geojson._layers[p]; // The other points.
 						if (point._leaflet_id != this._leaflet_id) {
-							var xypi = this._map.latLngToLayerPoint(point._ll_init), // XY autre point
-								dp = xypi.distanceTo(xysi); // Distance du point p au point survolé
-							if (!dp) { // S'il est confondu, on ajoute simplement l'écart voulu vers la droite // TODO: si 3 points sont confondus !
+							var xypi = this._map.latLngToLayerPoint(point._ll_init), // XY other point.
+								dp = xypi.distanceTo(xysi); // Distance to the p point p overflown.
+							if (!dp) { // If the 2 points are too close, we shift right one // TODO: if 3 points are too close !
 								xypi.x += dm;
 								point.setLatLng(this._map.layerPointToLatLng(xypi));
 							} else
 								point.setLatLng(
-									dp > dm ? point._ll_init // Si loin, on le remet à sa position initiale
-									: [ // Sinon, on ajoute au décalage
+									dp > dm ? point._ll_init // If it's far, we bring it at it initial position.
+									: [ // If not, we add to the existing shift.
 										this._ll_init.lat + (point._ll_init.lat - this._ll_init.lat) * dm / dp,
 										this._ll_init.lng + (point._ll_init.lng - this._ll_init.lng) * dm / dp
 									]
@@ -149,44 +135,43 @@ L.GeoJSON.Ajax = L.GeoJSON.extend({
 					}
 				}
 
-				// Etiquette au survol
-				var hover_bubble = new L.Rrose({
-						offset: new L.Point(-1, -3), // Evite que le curseur se retrouve sur le popup
+				// Hover label.
+				new L.Rrose({
+						offset: new L.Point(-1, -3), // Avoid to cover the marker with the popup.
 						closeButton: false,
 						autoPan: false
 					})
-					.setContent(feature.properties.nom) // TODO: ce serait préférable de mettre nom mais ruprure d'interface WRI
+					.setContent(feature.properties.nom) // TODO: This would be better to use 'name' but we need to modify also www.refuges.info
 					.setLatLng(e.latlng)
 					.openOn(this._map);
 			});
 
-			if (typeof this.hover == 'function')//TODO voir pourquoi pas if (typeof e.target._options == 'object'
-				// Action au survol
+			if (typeof this.hover == 'function')
+				// Action during the overflown.
 				layer.on('mouseover', function(e) {
 					e.target._options.hover(e.target, 'in');
-			});
+				});
 
 			layer.on('mouseout', function(e) {
-				// On retire l'étiquette à la fin du survol
+				// Remove the popup at the end of the overflown.
 				if (this._map)
 					this._map.closePopup();
 
-				// Action à la fin du survol
+				// Action at the overflown end
 				if (typeof e.target._options == 'object' &&
 					typeof e.target._options.hover == 'function')
 					e.target._options.hover(e.target, 'out');
 			});
 
-			// Si le feature retourné par la requette ajax a une propriété url:
+			// If the feature has an url porperty:
 			if (typeof this.url == 'function') {
 				var url = this.url(layer);
-				if (url)
-					layer.on('click', function(e) { // Va sur la page quand on clique sur le marqueur
-						if (e.originalEvent.shiftKey || e.originalEvent.ctrlKey) // Shift + Click lance le lien dans une nouvelle fenêtre
-							window.open(url);
-						else
-							document.location.href = url;
-					});
+				layer.on('click', function(e) { // Navigate the the url when we click the marker.
+					if (e.originalEvent.shiftKey || e.originalEvent.ctrlKey) // Shift + Click open the url in a new window. //TODO: doesn't work on FF
+						window.open(url);
+					else
+						document.location.href = url;
+				});
 			}
 		}
 	}

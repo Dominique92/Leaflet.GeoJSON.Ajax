@@ -1,9 +1,8 @@
 var deps = {
 	Core: {
 		src: [
-			'GeoJSON.Ajax.js',
-			'GeoJSON.Ajax.WRIpoi.js',
-			'GeoJSON.Ajax.WRImassifs.js'
+			'../GeoJSON.Ajax.js',
+			'../GeoJSON.Ajax.WRI.js',
 		],
 		desc: 'GeoJSON on Ajax layers.'
 	}

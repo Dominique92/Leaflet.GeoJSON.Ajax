@@ -30,12 +30,10 @@
 
 			// Ajax overpass layer
 			new L.GeoJSON.Ajax(
-				'http://overpass-api.de/api/interpreter',
-				{
+				'http://overpass-api.de/api/interpreter', {
 					// Url args calculation
 					argsGeoJSON: function(layer) {
-						var bb = layer.getBbox().split(','),
-							req = `
+						var req = `
 								[out:json][timeout:25];
 								(
 									node["tourism"~"hotel|camp_site"]({{bbox}});
@@ -45,7 +43,9 @@
 								);
 								out 100 center;
 								>;
-							`;
+							`,
+							bb = layer.getBbox().split(',');
+						layer.options.disabled = bb[2] - bb[0] > .5; // Inhibe la bbox au dessus de 0,5° d'ouverture en longitude
 						return {
 							data: req.replace(/{{bbox}}/g, bb[1] + ',' + bb[0] + ',' + bb[3] + ',' + bb[2])
 						};
@@ -53,27 +53,29 @@
 
 					// Convert received data in geoJson format
 					tradJson: function(data) {
-						var geo = []
+						var geo = [];
 						for (e in data.elements) {
-							var d = data.elements[e];
-							geo.push({
-								type: 'Feature',
-								id: d.id,
-								properties: {
-									url: 'http://www.openstreetmap.org/node/' + d.id,
-									title: d.tags.name,
-									iconUrl:
-										d.tags.tourism == 'hotel' ? 'http://chemineur.fr/prod/chemtype/hotel.png' :
-										d.tags.tourism == 'camp_site' ? 'http://chemineur.fr/prod/chemtype/camping.png' :
-										d.tags.shop == 'convenience' ? 'http://chemineur.fr/prod/chemtype/ravitaillement.png' :
-										d.tags.shop == 'supermarket' ? 'http://chemineur.fr/prod/chemtype/ravitaillement.png' :
-										'http://www.refuges.info/images/icones/batiment-en-montagne.png',
-								},
-								geometry: {
-									type: 'Point',
-									coordinates: [d.lon, d.lat]
-								}
-							});
+							var d = data.elements[e],
+								iconUrl =
+									d.tags.tourism == 'hotel' ? 'http://chemineur.fr/prod/chemtype/hotel.png' :
+									d.tags.tourism == 'camp_site' ? 'http://chemineur.fr/prod/chemtype/camping.png' :
+									d.tags.shop == 'convenience' ? 'http://chemineur.fr/prod/chemtype/ravitaillement.png' :
+									d.tags.shop == 'supermarket' ? 'http://chemineur.fr/prod/chemtype/ravitaillement.png' :
+									null;
+							if (d.lon && d.lat && iconUrl)
+								geo.push({
+									type: 'Feature',
+									id: d.id,
+									properties: {
+										url: 'http://www.openstreetmap.org/node/' + d.id,
+										title: d.tags.name,
+										iconUrl: iconUrl,
+									},
+									geometry: {
+										type: 'Point',
+										coordinates: [d.lon, d.lat]
+									}
+								});
 						}
 						return geo;
 					},

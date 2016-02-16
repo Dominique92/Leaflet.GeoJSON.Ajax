@@ -13,9 +13,9 @@ L.GeoJSON.Ajax.WRIpoi = L.GeoJSON.Ajax.extend({
 			'http://www.refuges.info/api/bbox',
 			{
 				argsGeoJSON: {
+					bbox: true,
 					type_points: 'all'
 				},
-				bbox: true,
 				style: function(feature) {
 					return {
 						url: feature.properties.lien,
@@ -38,9 +38,9 @@ L.GeoJSON.Ajax.WRImassifs = L.GeoJSON.Ajax.extend({
 			'http://www.refuges.info/api/polygones',
 			{
 				argsGeoJSON: {
+					bbox: true,
 					type_polygon: 1
 				},
-				bbox: true,
 				style: function(feature) {
 					return {
 						title: feature.properties.nom,

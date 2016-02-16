@@ -28,28 +28,21 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 
 	onAdd: function(map) {
 		L.GeoJSON.prototype.onAdd.call(this, map);
-
-		// If BBOX, reload the geoJSON from the server each time the map moves/zoom.
-		if (this.options.bbox)
-			map.on('moveend', this.reload, this);
-
-		// Anyway, we need to load it at the beginning.
-		this.reload();
+		this.reload(); // Load it at the beginning.
 	},
 
-	reload: function(args) {
-		// Update args if necessary
-		L.extend(this.options.argsGeoJSON, args);
+	getBbox: function() {
+		this._map.on('moveend', this.reload, this); // Replay if map moves
+		return this._map.getBounds().toBBoxString();
+	},
 
-		// Prepare the BBOX url options.
-		if (this.options.bbox && this._map) {
-			var bounds = this._map.getBounds(),
-				minll = bounds.getSouthWest(),
-				maxll = bounds.getNorthEast();
-			this.options.argsGeoJSON['bbox'] = minll.lng + ',' + minll.lat + ',' + maxll.lng + ',' + maxll.lat;
-		}
+	reload: function() {
+		var argsGeoJSON = typeof this.options.argsGeoJSON == 'function' ? this.options.argsGeoJSON(this) : this.options.argsGeoJSON;
 
-		// We prepare the Request object
+		if (this.options.bbox || argsGeoJSON.bbox)
+			argsGeoJSON['bbox'] = this.getBbox();
+
+		// Prepare the Request object
 		if (!this.ajaxRequest) { // Only once.
 			if (window.XMLHttpRequest)
 				this.ajaxRequest = new XMLHttpRequest();
@@ -62,20 +55,22 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 			this.ajaxRequest.context = this; // Reference the layer object for further usage.
 		}
 
-		// Process AJAX response.
+		// Prepare AJAX response.
 		this.ajaxRequest.onreadystatechange = function(e) {
-			if (e.target.readyState < 4) // Still in process
+			if (e.target.readyState < 4) // Still in progress
 				return;
 			if (e.target.status == 200)
 				e.target.context.redraw(e.target.responseText);
 			else if (e.target.status)
-				alert('ajaxRequest error status = ' + e.target.status + ' calling ' + this.options.urlGeoJSON);
+				alert('ajaxRequest error status = ' + e.target.status + ' calling ' + this.context.options.urlGeoJSON);
 		};
-		this.ajaxRequest.open('GET', this.options.proxy + this.options.urlGeoJSON + L.Util.getParamString(this.options.argsGeoJSON), true);
+
+		// Send the request
+		this.ajaxRequest.open('GET', this.options.proxy + this.options.urlGeoJSON + L.Util.getParamString(argsGeoJSON), true);
 		this.ajaxRequest.send(null);
 	},
 
-	redraw: function(geoJSON) {
+	redraw: function(json) {
 		// Empty the layer.
 		for (l in this._layers)
 			if (this._map)
@@ -83,10 +78,18 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 
 		// Redraw new features.
 		try {
-			eval('this.addData([' + geoJSON + '])');
+			// Get json data
+			eval('var js =' + json);
+
+			// Perform a special calculation if necessary (used for OSM overpass)
+			if (typeof this.options.tradJson == 'function')
+				js = this.options.tradJson(js);
+
+			// Add it to the layer
+			this.addData(js);
 		} catch (e) {
 			if (e instanceof SyntaxError)
-				alert('Json syntax error on ' + this.options.urlGeoJSON + this.args + ' :\n' + geoJSON);
+				alert('Json syntax error on ' + this.options.urlGeoJSON + this.args + ' :\n' + json);
 		}
 	}
 });

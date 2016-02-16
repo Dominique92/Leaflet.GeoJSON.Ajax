@@ -28,8 +28,8 @@ new L.GeoJSON.Ajax(
 	<URL>, // GeoJson server URL.
 	{
 		proxy: '', // Optional: insert proxy @ before the url
-		bbox: false|true, // Optional: whether or not add bbox arg to the geoJson server URL
 		argsGeoJSON: {
+			bbox: false|true, // Optional: whether or not add bbox arg to the geoJson server URL
 			name: value, // GeoJson args pairs that will be added to the url with the syntax: ?name=value&...
 			...
 		}
@@ -49,19 +49,17 @@ new L.GeoJSON.Ajax(
 * `title: <string>,` // hover label
 * `popupAnchor: [<int>, <int>] | default=[middle,top+5px]`, // point from which the popup should open relative to the iconAnchor
 * `url: <string>,` // url where to navigate when the feature is clicked
+* Or any of the following [L.GeoJSON options](http://leafletjs.com/reference.html#geojson-options)
 
-Or any of the following [L.GeoJSON options](http://leafletjs.com/reference.html#geojson-options)
-
-Markers:
+o Markers:
 * `iconUrl: <string>,` // url of icon image
 * `iconSize: [<int>, <int>] | default=img file size,` // Size of the icon.
 * `iconAnchor: [<int>, <int>] | default=[middle,top],` // point of the icon which will correspond to marker's location
 * `degroup: <int>,` // Isolate too close markers by a number of pixels when the mouse hover over the group.
+* Or any of the following [L.Marker options](http://leafletjs.com/reference.html#marker-options)
 
-Or any of the following [L.Marker options](http://leafletjs.com/reference.html#marker-options)
-
-Poly*
-Any of the following [L.Path options](http://leafletjs.com/reference.html#path-options)
+o Poly
+* Any of the following [L.Path options](http://leafletjs.com/reference.html#path-options)
 
 ### <geoJson> URL return must respect the [geoJson format](http://geojson.org/geojson-spec.html):
 ```javascript

@@ -14,26 +14,28 @@
 	<script src="http://erictheise.github.io/rrose/javascripts/leaflet.rrose-src.js"></script>
 
 	<!-- This pluggin -->
-	<link rel="stylesheet" href="../GeoJSON.Ajax.css" />
-	<script src="../src/GeoJSON.Style.js"></script>
-	<script src="../src/GeoJSON.Ajax.js"></script>
+	<link rel="stylesheet" href="../GeoJSON.Style.css" />
+	<script src="../GeoJSON.Style.js"></script>
+	<script src="../GeoJSON.Ajax.js"></script>
 
 	<script>
 		window.addEventListener('load', function() {
-			var map = new L.Map('map');
-			map.setView([45.88, 6.15], 12);
+		    var map = new L.Map('map');
+		    map.setView([45.88, 6.15], 12);
 
-			// Baselayer
-			new L.TileLayer('http://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
-				attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
-			}).addTo(map);
+		    // Baselayer
+		    new L.TileLayer('http://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+		        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
+		    }).addTo(map);
 
-			// Ajax overpass layer
-			new L.GeoJSON.Ajax(
-				'http://overpass-api.de/api/interpreter', {
-					// Url args calculation
-					argsGeoJSON: function(layer) {
-						var req = `
+		    new L.Control.Permalink.Cookies().addTo(map);
+
+		    // Ajax overpass layer
+		    new L.GeoJSON.Ajax(
+		        'http://overpass-api.de/api/interpreter', {
+		            // Url args calculation
+		            argsGeoJSON: function(layer) {
+		                var req = `
 								[out:json][timeout:25];
 								(
 									node["tourism"~"hotel|camp_site"]({{bbox}});
@@ -44,48 +46,66 @@
 								out 100 center;
 								>;
 							`,
-							bb = layer.getBbox().split(',');
-						layer.options.disabled = bb[2] - bb[0] > .5; // Inhibe la bbox au dessus de 0,5° d'ouverture en longitude
-						return {
-							data: req.replace(/{{bbox}}/g, bb[1] + ',' + bb[0] + ',' + bb[3] + ',' + bb[2])
-						};
-					},
+		                    bb = layer.getBbox().split(',');
+		                layer.options.disabled = bb[2] - bb[0] > .5; // Inhibe la bbox au dessus de 0,5° d'ouverture en longitude
+		                return {
+		                    data: req.replace(/{{bbox}}/g, bb[1] + ',' + bb[0] + ',' + bb[3] + ',' + bb[2])
+		                };
+		            },
 
-					// Convert received data in geoJson format
-					tradJson: function(data) {
-						var geo = [];
-						for (e in data.elements) {
-							var d = data.elements[e],
-								iconUrl =
-									d.tags.tourism == 'hotel' ? 'http://chemineur.fr/prod/chemtype/hotel.png' :
-									d.tags.tourism == 'camp_site' ? 'http://chemineur.fr/prod/chemtype/camping.png' :
-									d.tags.shop == 'convenience' ? 'http://chemineur.fr/prod/chemtype/ravitaillement.png' :
-									d.tags.shop == 'supermarket' ? 'http://chemineur.fr/prod/chemtype/ravitaillement.png' :
-									null;
-							if (d.lon && d.lat && iconUrl)
-								geo.push({
-									type: 'Feature',
-									id: d.id,
-									properties: {
-										url: 'http://www.openstreetmap.org/node/' + d.id,
-										title: d.tags.name,
-										iconUrl: iconUrl,
-									},
-									geometry: {
-										type: 'Point',
-										coordinates: [d.lon, d.lat]
-									}
-								});
-						}
-						return geo;
-					},
-					style: {
-						iconAnchor: [8, 8],
-						popupAnchor: [-1, -9],
-						degroup: 12
-					}
-				}
-			).addTo(map);
+		            // Convert received data in geoJson format
+		            tradJson: function(data) {
+		                var geo = [];
+		                for (e in data.elements) {
+		                    var d = data.elements[e],
+								t = d.tags,
+		                        iconUrl =
+									t.tourism == 'hotel' ? 'http://chemineur.fr/prod/chemtype/hotel.png' :
+									t.tourism == 'camp_site' ? 'http://chemineur.fr/prod/chemtype/camping.png' :
+									t.shop == 'convenience' ? 'http://chemineur.fr/prod/chemtype/ravitaillement.png' :
+									t.shop == 'supermarket' ? 'http://chemineur.fr/prod/chemtype/ravitaillement.png' :
+									null,
+		                        adresses = [
+		                            t['addr:housenumber'],
+		                            t['addr:street'],
+		                            t['addr:postcode'],
+		                            t['addr:city']
+		                        ],
+		                        popup = [
+		                            t.name ? '<b>' + t.name + (t.stars ? ' ' + '*'.repeat(t.stars) : '') + '</b>' : '',
+		                            t.tourism == 'hotel' ? 'Hôtel' + (t.rooms ? ' ' + t.rooms + ' chambres' : '') : '',
+		                            t.tourism == 'camp_site' ? 'Camping' : '',
+		                            t.shop == 'convenience' ? 'Alimentation' : '',
+		                            t.shop == 'supermarket' ? 'Supermarché' : '',
+		                            t['contact:phone'],
+		                            t.email ? '<a href="mailto:' + t.email + '">' + t.email + '</a>' : '',
+		                            t['addr:street'] ? adresses.join(' ') : '',
+		                            t.website ? '<a href="' + (t.website.search('http') ? 'http://' : '') + t.website + '">' + t.website + '</a>' : ''
+		                        ];
+		                    if (d.lon && d.lat && iconUrl)
+		                        geo.push({
+		                            type: 'Feature',
+		                            id: d.id,
+		                            properties: {
+		                                iconUrl: iconUrl,
+		                                title: t.name,
+		                                popup: '<p>' + popup.join('</p><p>') + '</p>'
+		                            },
+		                            geometry: {
+		                                type: 'Point',
+		                                coordinates: [d.lon, d.lat]
+		                            }
+		                        });
+		                }
+		                return geo;
+		            },
+		            style: {
+		                iconAnchor: [8, 8],
+		                popupAnchor: [-1, -9],
+		                degroup: 12
+		            }
+		        }
+		    ).addTo(map);
 		});
 	</script>
 </head>

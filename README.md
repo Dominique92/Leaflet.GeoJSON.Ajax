@@ -98,4 +98,4 @@ new L.GeoJSON.Style(
 ```
 
 ### Code example:
-[GeoJSON.Ajax.WRI.js](https://github.com/Dominique92/Leaflet.GeoJSON.Ajax/blob/master/src/GeoJSON.Ajax.WRI.js)
+[GeoJSON.Ajax.WRI.js](https://github.com/Dominique92/Leaflet.GeoJSON.Ajax/blob/master/layers/GeoJSON.Ajax.WRI.js)

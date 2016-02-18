@@ -16,3 +16,10 @@
 .marker-popup-click p {
 	margin: 1px;
 }
+
+/* carte OSM.overpass */
+.popup-copyright {
+	float: right;
+	margin-right: -19px;
+	text-decoration: none;
+}

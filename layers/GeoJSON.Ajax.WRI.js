@@ -96,7 +96,7 @@ out 100 center;
 						t.tourism == 'hotel' ? 'Hôtel' + (t.rooms ? ' ' + t.rooms + ' chambres' : '') : '',
 						t.tourism == 'camp_site' ? 'Camping ' + (t.place ? t.place + ' places' : '') : '',
 						t.shop == 'convenience' ? 'Alimentation' : '',
-						t.shop == 'supermarket' ? 'Supermarché' : '',
+						t.shop == 'supermarket' ? 'Supermarch&egrave;' : '',
 						t['contact:phone'], t['phone'],
 						t.email ? '<a href="mailto:' + t.email + '">' + t.email + '</a>' : '',
 						t['addr:street'] ? adresses.join(' ') : '',

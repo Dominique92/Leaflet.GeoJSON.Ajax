@@ -29,10 +29,10 @@ new L.GeoJSON.Ajax(
 	{
 		proxy: '', // Optional: insert proxy @ before the url
 		argsGeoJSON: {
-			bbox: false|true, // Optional: whether or not add bbox arg to the geoJson server URL
 			name: value, // GeoJson args pairs that will be added to the url with the syntax: ?name=value&...
 			...
 		}
+		bbox: false|true, // Optional: whether or not add bbox arg to the geoJson server URL
 		style: function(feature) { // Optional
 			return {
 				"<NAME>": <VALUE>, // Properties pairs that will overwrite the geoJson flow features properties

@@ -75,7 +75,7 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 
 		if (e.target.status == 200)
 			e.target.context.redraw(e.target.responseText);
-		else if (e.target.status)
+		else if (e.target.status && e.target.status != 429 /* Too many requests */)
 			alert('ajaxRequest error status = ' + e.target.status + ' calling ' + this.context.options.urlGeoJSON);
 	},
 

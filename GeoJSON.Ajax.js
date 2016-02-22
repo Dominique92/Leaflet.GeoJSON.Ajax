@@ -14,13 +14,16 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 
 	options: {
 		proxy: '', // If needed by the GeoJSON server / This can be avoided if the GeoJSON server delivers: header("Access-Control-Allow-Origin: *");
+		urlRoot: '', // Prefix to all urls used in this layer.
 		urlGeoJSON: null, // GeoJSON server URL.
 		argsGeoJSON: {} // GeoJSON server args.
 	},
 
 	initialize: function(urlGeoJSON, options) {
-		if (urlGeoJSON)
+		if (typeof urlGeoJSON == 'string')
 			this.options.urlGeoJSON = urlGeoJSON;
+		else
+			options = options || urlGeoJSON; // Simplified call, with no urlGeoJSON
 
 		// Prepare the Request object
 		if (window.XMLHttpRequest)
@@ -47,17 +50,23 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 			this._map.on('moveend', this.reload, this);
 	},
 
-	reload: function() {
-		// Prepare the request arguments
+	// Build the final url request to send to the server
+	getUrl: function() {
 		var argsGeoJSON = typeof this.options.argsGeoJSON == 'function' ? this.options.argsGeoJSON(this) : this.options.argsGeoJSON;
 
+		// Add bbox param if necessary
 		if (this.options.bbox)
 			argsGeoJSON.bbox = this._map.getBounds().toBBoxString();
 
+		return this.options.proxy + this.options.urlRoot + this.options.urlGeoJSON + L.Util.getParamString(argsGeoJSON);
+	},
+
+	reload: function() {
+		// Prepare the request arguments
 		// Send the request
 		this.ajaxRequest.open(
 			'GET',
-			this.options.proxy + this.options.urlGeoJSON + L.Util.getParamString(argsGeoJSON),
+			this.getUrl(),
 			true
 		);
 
@@ -76,7 +85,7 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 		if (e.target.status == 200)
 			e.target.context.redraw(e.target.responseText);
 		else if (e.target.status && e.target.status != 429 /* Too many requests */)
-			alert('ajaxRequest error status = ' + e.target.status + ' calling ' + this.context.options.urlGeoJSON);
+			alert('ajaxRequest error status = ' + e.target.status + ' calling ' + e.target.context.getUrl());
 	},
 
 	redraw: function(json) {
@@ -86,20 +95,21 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 				this._map.removeLayer(this._layers[l]);
 		this._layers = [];
 
-		if (json)
+		if (json) {
 			try {
 				// Get json data
 				var js = JSON.parse(json);
-
-				// Perform a special calculation if necessary (used for OSM overpass)
-				if (typeof this.options.tradJson == 'function')
-					js = this.options.tradJson(js);
-
-				// Add it to the layer
-				this.addData(js);
 			} catch (e) {
 				if (e instanceof SyntaxError)
-					alert('Json syntax error on ' + this.options.urlGeoJSON + this.args + ' :\n' + json);
+					alert('Json syntax error on ' + this.getUrl() + ' :\n' + json);
+				return;
 			}
+			// Perform a special calculation if necessary (used for OSM overpass)
+			if (typeof this.options.tradJson == 'function')
+				js = this.options.tradJson(js);
+
+			// Add it to the layer
+			this.addData(js);
+		}
 	}
 });

@@ -32,7 +32,7 @@ new L.GeoJSON.Ajax(
 			name: value, // GeoJson args pairs that will be added to the url with the syntax: ?name=value&...
 			...
 		}
-		bbox: false|true, // Optional: whether or not add bbox arg to the geoJson server URL
+		bbox: <boolean>, // Optional: whether or not add bbox arg to the geoJson server URL
 		style: function(feature) { // Optional
 			return {
 				"<NAME>": <VALUE>, // Properties pairs that will overwrite the geoJson flow features properties
@@ -46,20 +46,30 @@ new L.GeoJSON.Ajax(
 ```
 
 ### Properties pairs `"<NAME>":<VALUE>` can be:
-* `title: <string>,` // hover label
-* `popupAnchor: [<int>, <int>] | default=[middle,top+5px]`, // point from which the popup should open relative to the iconAnchor
-* `url: <string>,` // url where to navigate when the feature is clicked
-* Or any of the following [L.GeoJSON options](http://leafletjs.com/reference.html#geojson-options)
-
 o Markers:
-* `iconUrl: <string>,` // url of icon image
+* `iconUrl: <string>,` // Url of icon image
 * `iconSize: [<int>, <int>] | default=img file size,` // Size of the icon.
-* `iconAnchor: [<int>, <int>] | default=[middle,top],` // point of the icon which will correspond to marker's location
+* `iconAnchor: [<int>, <int>] | default=[middle,top],` // Point of the icon which will correspond to marker's location
 * `degroup: <int>,` // Isolate too close markers by a number of pixels when the mouse hover over the group.
 * Or any of the following [L.Marker options](http://leafletjs.com/reference.html#marker-options)
 
-o Poly
+o Poly:
 * Any of the following [L.Path options](http://leafletjs.com/reference.html#path-options)
+
+o General / display a label when hovering the feature:
+* `title: <string>,` // Hover label
+* `remanent: <boolean> | default=false,` // Whether or not the label remains when the mouse leaves the property area or when hovering another feature
+* `popupAnchor: [<int>, <int>] | default=[middle,top]`, // Point from which the popup should open relative to the iconAnchor
+* `labelClass: <string>,` // Optional: CSS class to apply to the label
+
+o General / display a popup when clicking the feature:
+* `popup: <string>,` // Popup label
+* `popupAnchor`,
+* `popupClass,`
+
+o General / action when clicking the feature:
+* `url: <string>,` // Url where to navigate when the feature is clicked
+* Or any of the following [L.GeoJSON options](http://leafletjs.com/reference.html#geojson-options)
 
 ### <geoJson> URL return must respect the [geoJson format](http://geojson.org/geojson-spec.html):
 ```javascript

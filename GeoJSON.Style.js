@@ -15,8 +15,8 @@ L.GeoJSON.Style = L.GeoJSON.extend({
 		// Merge layer style & feature properties.
 		var style = L.extend({},
 			layer.feature.properties, // Low priority: geoJSON properties.
-			typeof layerStyle == 'function' ? layerStyle(layer.feature) // Priority one: layer.options.style()
-			: layerStyle // | layer.options.style
+			typeof layerStyle == 'function' ? layerStyle.call(this,layer.feature) // When layer.options.style is a function
+				: layerStyle // Priority one: layer.options.style
 		);
 
 		// Use an icon file to display a marker.
@@ -26,9 +26,9 @@ L.GeoJSON.Style = L.GeoJSON.extend({
 		// Show a popup when clicking the marker.
 		if (style.popup)
 			layer.on('click', function(e) {
-				layer.off('mouseout'); // Don't close on moving out
+				layer.off('mouseout', this._closePopup); // Don't close on moving out
 				var popup = L.popup({
-						className: 'marker-popup-click'
+						className: style.popupClass ? style.popupClass : ''
 					})
 					.setLatLng(e.latlng)
 					.setContent(style.popup)
@@ -48,12 +48,12 @@ L.GeoJSON.Style = L.GeoJSON.extend({
 			if (style.degroup)
 				this._degroup(layer, style.degroup);
 
-			// Display a label popup when hover the feature.
+			// Display a label when hover the feature.
 			if (style.title) {
-				var popupAnchor = style.popupAnchor || [0, -45];
+				var popupAnchor = style.popupAnchor || [0, 0];
 				new L.Rrose({
 						offset: new L.Point(popupAnchor[0], popupAnchor[1]), // Avoid to cover the marker with the popup.
-						className: 'marker-popup-hover',
+						className: style.labelClass ? style.labelClass : '',
 						closeButton: false,
 						autoPan: false
 					})
@@ -61,17 +61,21 @@ L.GeoJSON.Style = L.GeoJSON.extend({
 					.setLatLng(e.latlng)
 					.openOn(this._map);
 
-				// Close the popup when moving out of the marker
-				layer.off('mouseout');
-				layer.on('mouseout', function(e) {
-					if (this._map)
-						this._map.closePopup();
-				});
+				// Close the label when moving out of the marker
+				if (!style.remanent) {
+					layer.off('mouseout', this._closePopup); // Only once
+					layer.on('mouseout', this._closePopup); // Use named function to not off all mouseout when layer off 'mouseout'
+				}
 			}
 		}, this);
 
 		// Finish as usual.
 		L.GeoJSON.prototype._setLayerStyle.call(this, layer, style);
+	},
+
+	_closePopup: function() {
+		if (this._map)
+			this._map.closePopup();
 	},
 
 	// Isolate too close markers when the mouse hover over the group.

@@ -27,7 +27,6 @@ Include stylesheets/leaflet.rrose.css and javascripts/rrose-src.js
 new L.GeoJSON.Ajax(
 	<URL>, // GeoJson server URL.
 	{
-		proxy: '', // Optional: insert proxy @ before the url
 		argsGeoJSON: {
 			name: value, // GeoJson args pairs that will be added to the url with the syntax: ?name=value&...
 			...

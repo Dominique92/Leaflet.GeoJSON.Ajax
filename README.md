@@ -6,8 +6,6 @@ Get collection of features from a remote `<URL>` & display it into the map with 
 
 Add customized markers, popup labels & click to navigate to external urls.
 
-It depends on [Leaflet.Rrose](https://github.com/erictheise/rrose).
-
 This plugin works both on Leaflet V0.7 & V1.0
 
 DEMO
@@ -22,8 +20,6 @@ Usage
 Create a L.GeoJSON.Ajax instance & add it to the map.
 ```javascript
 ...
-Include stylesheets/leaflet.rrose.css and javascripts/rrose-src.js
-
 new L.GeoJSON.Ajax(
 	<URL>, // GeoJson server URL.
 	{
@@ -90,8 +86,6 @@ o General:
 
 ### Display local geoJson data with local style:
 ```javascript
-Include stylesheets/leaflet.rrose.css and javascripts/rrose-src.js
-
 new L.GeoJSON.Style(
 	<geoJSON>, // <String> geoJson features
 	{

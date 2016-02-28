@@ -9,15 +9,18 @@
  * With the great initial push from https://github.com/LeOSW42
  */
 
-// Add presentation & actions to geoJSON format
+/* L.GeoJSON.Style
+ * Add presentation & actions to geoJSON format
+ */
+
 L.GeoJSON.Style = L.GeoJSON.extend({
 	// Modify the way the layer representing one of the features is displayed
 	_setLayerStyle: function(layer, layerStyle) {
 		// Merge layer style & feature properties.
 		var style = L.extend({},
 			layer.feature.properties, // Low priority: geoJSON properties.
-			typeof layerStyle == 'function' ? layerStyle.call(this,layer.feature) // When layer.options.style is a function
-				: layerStyle // Priority one: layer.options.style
+			typeof layerStyle == 'function' ? layerStyle.call(this, layer.feature) // When layer.options.style is a function
+			: layerStyle // Priority one: layer.options.style
 		);
 
 		// Use an icon file to display a marker.
@@ -52,13 +55,13 @@ L.GeoJSON.Style = L.GeoJSON.extend({
 			// Display a label when hover the feature.
 			if (style.title) {
 				var popupAnchor = style.popupAnchor || [0, 0];
-				new L.Rrose({
-						offset: new L.Point(popupAnchor[0], popupAnchor[1]), // Avoid to cover the marker with the popup.
-						className: style.labelClass ? style.labelClass : '',
-						closeButton: false,
-						autoPan: false
-					})
-					.setContent(style.title)
+				new(L.Rrose || L.Popup)({
+					offset: new L.Point(popupAnchor[0], popupAnchor[1]), // Avoid to cover the marker with the popup.
+					className: style.labelClass ? style.labelClass : '',
+					closeButton: false,
+					autoPan: false
+				})
+				.setContent(style.title)
 					.setLatLng(e.latlng)
 					.openOn(this._map);
 
@@ -105,13 +108,18 @@ L.GeoJSON.Style = L.GeoJSON.extend({
 	}
 });
 
-// Remote access to geoJson data flow
+
+/* L.GeoJSON.Ajax
+ * Remote access to geoJson data flow
+ */
+
 L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 	ajaxRequest: null,
 
 	options: {
 		urlGeoJSON: null, // GeoJSON server URL.
-		argsGeoJSON: {} // GeoJSON server args.
+		argsGeoJSON: {}, // GeoJSON server args.
+		idAjaxStatus: null // HTML id element owning the loading status display
 	},
 
 	initialize: function(urlGeoJSON, options) {
@@ -119,6 +127,13 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 			this.options.urlGeoJSON = urlGeoJSON;
 		else
 			options = options || urlGeoJSON; // Simplified call, with no urlGeoJSON
+
+		// L.GeoJSON init with blank content as we will get it later.
+		L.GeoJSON.prototype.initialize.call(this, null, options);
+
+		// Change class of id="ajax-status" to class="over-<STATUS>"
+		// <STATUS> = none | zoom | wait | some | zero | error
+		this.elAjaxStatus = document.getElementById(this.options.idAjaxStatus) || document.createElement('div');
 
 		// Prepare the Request object
 		if (window.XMLHttpRequest)
@@ -131,9 +146,6 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 		}
 		this.ajaxRequest.context = this; // Reference the layer object for further usage.
 		this.ajaxRequest.onreadystatechange = this._onreadystatechange; // Action when receiving data
-
-		// L.GeoJSON init with blank content as we will get it later.
-		L.GeoJSON.prototype.initialize.call(this, null, options);
 	},
 
 	onAdd: function(map) {
@@ -147,9 +159,7 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 
 	// Build the final url request to send to the server
 	_getUrl: function() {
-		var argsGeoJSON = typeof this.options.argsGeoJSON == 'function'
-			? this.options.argsGeoJSON.call(this, this)
-			: this.options.argsGeoJSON;
+		var argsGeoJSON = typeof this.options.argsGeoJSON == 'function' ? this.options.argsGeoJSON.call(this, this) : this.options.argsGeoJSON;
 
 		// Add bbox param if necessary
 		if (this.options.bbox && this._map)
@@ -159,35 +169,47 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 	},
 
 	reload: function() {
-		// Prepare the request arguments
-		// Send the request
+		// Build the request
 		this.ajaxRequest.open(
 			'GET',
 			this._getUrl(),
 			true
 		);
 
-		if (this.options.disabled)
-			this.redraw(); // If temporary disabled, just erase the data
-		else
-			this.ajaxRequest.send(null);
+		// If temporary disabled
+		if (this.options.disabled) {
+			this.redraw(); // Just erase the data
+			this.elAjaxStatus.className = 'over-none';
+			return;
+		}
 
+		// Zoom too large
+		var b = this._map.getBounds();
+		if (b._northEast.lng - b._southWest.lng > this.options.maxLatAperture) {
+			this.elAjaxStatus.className = 'over-zoom';
+			this.redraw(); // Just erase the data
+			return;
+		}
+
+		// Send the request
+		this.ajaxRequest.send(null);
+		this.elAjaxStatus.className = 'over-wait';
 	},
 
 	// Action when receiving data
 	_onreadystatechange: function(e) {
 		if (e.target.readyState < 4) // Still in progress
-		;
+			;
 		else if (e.target.status == 200)
 			e.target.context.redraw(e.target.responseText);
-		else if (typeof e.target.context['error'+e.target.status] == 'function')
-			e.target.context['error'+e.target.status].call (e.target.context);
+		else if (typeof e.target.context['error' + e.target.status] == 'function')
+			e.target.context['error' + e.target.status].call(e.target.context);
 		else if (e.target.status)
 			alert('ajaxRequest error status = ' + e.target.status + ' calling ' + e.target.context._getUrl());
 	},
 
 	redraw: function(json) {
-		// Empty the layer.
+		// Empty the layer
 		for (l in this._layers)
 			if (this._map)
 				this._map.removeLayer(this._layers[l]);
@@ -197,16 +219,20 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 			try {
 				var js = JSON.parse(json); // Get json data
 			} catch (e) {
-				if (e instanceof SyntaxError)
-					alert('Json syntax error on ' + this._getUrl() + ' :\n' + json);
+				alert('Json syntax error on ' + this._getUrl() + ' :\n' + json);
+				this.elAjaxStatus.className = 'over-error';
 				return;
 			}
-			// Perform a special calculation if necessary (used for OSM overpass)
+			// Perform a special calculation if necessary (used by OSM overpass)
 			if (typeof this.options.tradJson == 'function')
 				js = this.options.tradJson.call(this, js);
 
 			// Add it to the layer
 			this.addData(js);
+
+			if (this.elAjaxStatus.className == 'over-wait')
+				this.elAjaxStatus.className =
+				js.length || (js.features && js.features.length) ? 'over-some' : 'over-zero';
 		}
 	}
 });

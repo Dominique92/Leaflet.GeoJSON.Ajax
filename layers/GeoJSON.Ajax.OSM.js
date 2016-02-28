@@ -3,8 +3,9 @@
  * https://github.com/Dominique92
  * Supported both on Leaflet V0.7 & V1.0
  *
- * Ajax layers to access OpenStreetMap Overpass API
+ * Ajax layers to access OpenStreetMap Overpass API http://wiki.openstreetmap.org/wiki/Overpass_API
  * Based on L.GeoJSON and L.GeoJSON.Ajax
+ * With the great initial push from https://github.com/sletuffe
  */
 
 L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
@@ -13,28 +14,15 @@ L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 		bbox: true,
 		maxLatAperture: 0.25, // (Latitude degrees) The layer will only be displayed if it's zooms to less than this latitude aperture degrees.
 		timeout: 25, // Server timeout (seconds)
-		services: { // Request data formating
-			tourism: 'hotel|camp_site'
-			//...
-		},
-		icons: { // Icons name translation (if necessary)
-			camp_site: 'camping'
-			//...
-		},
-		language: { // label word translation (if necessary)
-			camp_site: 'camping'
-			//...
-		},
+		services: {}, // Request data formating
+		icons: {}, // Icons name translation
+		language: {}, // label word translation
 
 		// Url args calculation
 		argsGeoJSON: function() {
-			// Display status: none | zoom | wait | some | zero
-			// Change class of id="overpass-status" to class="over-<STATUS>"
-			this.os = document.getElementById('overpass-status') || document.createElement('div');
-
 			// Select services using html form
-			// <input type="checkbox" name="service_type[]" value="shop~supermarket|convenience" />
-			var st = document.getElementsByName('service_type[]');
+			// <input type="checkbox" name="osm-categories[]" value="shop~supermarket|convenience" />
+			var st = document.getElementsByName('osm-categories[]');
 			if (st.length) {
 				this.options.services = {};
 				for (var e = 0; e < st.length; e++)
@@ -46,25 +34,13 @@ L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 							this.options.services[val[0]] += '|' + val[1];
 					}
 			}
-			if (!Object.keys(this.options.services).length) { // No selection
-				this.options.disabled = true;
-				this.os.className = 'over-none';
-				return false;
-			}
 
-			// Zoom troo large
-			var b = this._map.getBounds();
-			if (b._northEast.lng - b._southWest.lng > this.options.maxLatAperture) {
-				this.options.disabled = true;
-				this.os.className = 'over-zoom';
-				return false;
-			}
+			// No selection ?
+			this.options.disabled = !Object.keys(this.options.services).length;
 
-			this.options.disabled = false;
-			this.os.className = 'over-wait';
-
-			// Request
+			// Build the request
 			var r = '[out:json][timeout:' + this.options.timeout + '];(\n',
+				b = this._map.getBounds(),
 				bbox = b._southWest.lat + ',' + b._southWest.lng + ',' + b._northEast.lat + ',' + b._northEast.lng;
 			for (var s in this.options.services) {
 				var x = '["' + s + '"~"' + this.options.services[s] + '"](' + bbox + ');\n';
@@ -77,10 +53,8 @@ L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 
 		// Convert received data in geoJson format
 		tradJson: function(data) {
-			this.os.className =
-				data.elements.length ? 'over-some' :
-				data.remark ? 'over-zoom' :
-				'over-zero';
+			if (data.remark)
+				this.elAjaxStatus.className = 'over-zoom';
 
 			var geoJson = []; // Prepare geoJson object for Leaflet.GeoJSON display
 			for (var e in data.elements) {
@@ -96,7 +70,7 @@ L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 						type = t[s];
 						icon = this.options.icons[t[s]] || t[s];
 					}
-				// Label text calculation
+					// Label text calculation
 				var adresses = [
 						t['addr:housenumber'],
 						t['addr:street'],
@@ -151,10 +125,10 @@ L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 	},
 
 	error429: function() { // Too many requests or request timed out
-		this.os.className = 'over-zoom';
+		this.elAjaxStatus.className = 'over-zoom';
 	},
 
 	error504: function() { // Gateway request timed out
-		this.os.className = 'over-zoom';
+		this.elAjaxStatus.className = 'over-zoom';
 	}
 });

@@ -9,34 +9,35 @@
 	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
 	<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
 
-	<!-- Erictheise.rrose plugin -->
-	<link rel="stylesheet" href="http://erictheise.github.io/rrose/stylesheets/leaflet.rrose.css" />
-	<script src="http://erictheise.github.io/rrose/javascripts/leaflet.rrose-src.js"></script>
-
 	<!-- This plugin -->
 	<script src="GeoJSON.Ajax.js"></script>
 	<script src="layers/GeoJSON.Ajax.WRI.js"></script>
 
-	<script>
-		window.addEventListener('load', function() {
-			map = new L.Map('map', {
-				center: new L.LatLng(46.8, 2),
-				zoom: 6,
-				layers: [
-					// Baselayer
-					new L.TileLayer('http://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
-						attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
-					}),
+	<style>
+		/* Labels */
+		.etiquette .leaflet-popup-content-wrapper {
+			border-radius: 8px;
+		}
+		.etiquette .leaflet-popup-content,
+		.etiquette .leaflet-popup-content p {
+			margin: 3px;
+		}
 
-					// Europe mountain points of interest
-					new L.GeoJSON.Ajax.WRIpoi(),
-
-					// French mountain limits
-					new L.GeoJSON.Ajax.WRImassifs()
-				]
-			});
-		});
-	</script>
+		/* Status icon */
+		#ajax-status * {
+			display: none;
+		}
+		#ajax-status div {
+			float: none;
+		}
+		.over-none #over-none,
+		.over-wait #over-wait,
+		.over-zoom #over-zoom,
+		.over-some #over-some,
+		.over-zero #over-zero {
+			display: initial !important;
+		}
+	</style>
 </head>
 
 <body>
@@ -45,6 +46,34 @@
 	<p>This demo runs on Leaflet V<script>document.write(L.version)</script> &#10144; <a href="examples/index-v1.0.html" style="font-size:12px">See demo on Leaflet V1.0</a></p>
 	<div style="position: absolute;right:0;top:0"><a href="examples/index-v1.0.html">&gt;</a>&nbsp;</div>
 
+	<div id="ajax-status">
+		<p id="over-zoom">Zoom to see more points</p>
+		<p id="over-wait">Loading...</p>
+		<p id="over-some">Loaded.</p>
+		<p id="over-zero">Nothing to see.</p>
+	</div>
+
 	<div id="map" style="width: 800px; height: 600px"></div>
+
+	<script>
+		map = new L.Map('map', {
+			center: new L.LatLng(46.8, 2),
+			zoom: 6,
+			layers: [
+				// Baselayer
+				new L.TileLayer('http://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+					attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
+				}),
+
+				// Europe mountain points of interest
+				new L.GeoJSON.Ajax.WRIpoi({
+					idAjaxStatus: 'ajax-status'
+				}),
+
+				// French mountain limits
+				new L.GeoJSON.Ajax.WRImassifs()
+			]
+		});
+	</script>
 </body>
 </html>

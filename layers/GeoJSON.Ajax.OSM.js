@@ -54,7 +54,7 @@ L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 		// Convert received data in geoJson format
 		tradJson: function(data) {
 			if (data.remark)
-				this.elAjaxStatus.className = 'over-zoom';
+				this.elAjaxStatus.className = 'ajax-zoom';
 
 			var geoJson = []; // Prepare geoJson object for Leaflet.GeoJSON display
 			for (var e in data.elements) {
@@ -84,7 +84,7 @@ L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 						t.rooms ? t.rooms + ' rooms' : '',
 						t.place ? t.place + ' places' : '',
 						t.capacity ? t.capacity + ' places' : '',
-						'<a href="http://www.openstreetmap.org/' + (d.center ? 'way' : 'node') + '/' + d.id + '">&copy;</a>'
+						'<a href="http://www.openstreetmap.org/' + (d.center ? 'way' : 'node') + '/' + d.id + '" target="_blank">&copy;</a>'
 					]
 					.join(' ')
 					.replace( // Word translation if necessary
@@ -97,10 +97,11 @@ L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 						t.name ? '<b>' + t.name + '</b>' : '',
 						title.charAt(0).toUpperCase() + title.substr(1), // Uppercase the first letter
 						t.ele ? t.ele + ' m' : '',
-						t['contact:phone'], t['phone'],
+						t['contact:phone'] ? '<a href="tel:'+t['contact:phone'].replace(/[^0-9\+]+/ig, '')+'">'+t['contact:phone']+'</a>' : '',
+						t['phone'] ? '<a href="tel:'+t['phone'].replace(/[^0-9\+]+/ig, '')+'">'+t['phone']+'</a>' : '',
 						t.email ? '<a href="mailto:' + t.email + '">' + t.email + '</a>' : '',
 						t['addr:street'] ? adresses.join(' ') : '',
-						t.website ? '<a href="' + (t.website.search('http') ? 'http://' : '') + t.website + '">' + t.website + '</a>' : ''
+						t.website ? '<a href="' + (t.website.search('http') ? 'http://' : '') + t.website + '" target="_blank">' + t.website + '</a>' : ''
 					];
 
 				if (d.center) // When item has a geometry, we need to get the center
@@ -125,10 +126,10 @@ L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 	},
 
 	error429: function() { // Too many requests or request timed out
-		this.elAjaxStatus.className = 'over-zoom';
+		this.elAjaxStatus.className = 'ajax-zoom';
 	},
 
 	error504: function() { // Gateway request timed out
-		this.elAjaxStatus.className = 'over-zoom';
+		this.elAjaxStatus.className = 'ajax-zoom';
 	}
 });

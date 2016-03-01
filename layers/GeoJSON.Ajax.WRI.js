@@ -39,7 +39,7 @@ L.GeoJSON.Ajax.WRImassifs = L.GeoJSON.Ajax.extend({
 		style: function(feature) {
 			return {
 				title: feature.properties.nom,
-				popupAnchor: [-1, -4],
+				popupAnchor: [0, -5],
 				url: feature.properties.lien,
 				color: feature.properties.couleur,
 				weight: 2

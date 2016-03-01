@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<title>Leaflet extension for remote GeoJSON layers</title>
+	<meta charset="utf-8">
+	<link rel="icon" type="image/png" href="http://leafletjs.com/docs/images/favicon.ico" />
+
+	<!-- Leaflet kernel -->
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+	<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+
+	<!-- GeoJSON.Ajax plugin -->
+	<script src="http://dominique92.github.io/MyLeaflet/github.com/Dominique92/Leaflet.GeoJSON.Ajax/GeoJSON.Ajax.js"></script>
+	<script src="http://dominique92.github.io/MyLeaflet/github.com/Dominique92/Leaflet.GeoJSON.Ajax/layers/GeoJSON.Ajax.OSM.js"></script>
+
+	<style>
+		/* Labels */
+		.etiquette .leaflet-popup-content-wrapper {
+			border-radius: 8px;
+		}
+		.etiquette .leaflet-popup-content,
+		.etiquette .leaflet-popup-content p {
+			margin: 2px;
+		}
+
+		/* Status icon */
+		#ajax-status * {
+			display: none;
+		}
+		#ajax-status div {
+			float: none;
+		}
+		.ajax-none #ajax-none,
+		.ajax-wait #ajax-wait,
+		.ajax-zoom #ajax-zoom,
+		.ajax-some #ajax-some,
+		.ajax-zero #ajax-zero,
+		.ajax-error #ajax-error {
+			display: initial !important;
+		}
+	</style>
+</head>
+
+<body>
+	<p>Leaflet extension OSM overpass features display</p>
+	<p>Sources on <a href= "https://github.com/Dominique92/Leaflet.GeoJSON.Ajax">Github: Dominique92/Leaflet.GeoJSON.Ajax</a></p>
+
+	<div id="map" style="width: 800px; height: 600px"></div>
+
+	<!-- OSM POI selection -->
+	<div><input type="checkbox" name="osm-categories[]" value="tourism~hotel" onclick="osm.reload()" />H&ocirc;tels</div>
+	<div><input type="checkbox" name="osm-categories[]" value="tourism~camp_site" onclick="osm.reload()" />Campings</div>
+	<div><input type="checkbox" name="osm-categories[]" value="shop~supermarket|convenience" onclick="osm.reload()" />Alimentation</div>
+	<div><input type="checkbox" name="osm-categories[]" value="amenity~parking" onclick="osm.reload()" />Parkings</div>
+
+	<div id="ajax-status">
+		<p id="ajax-zoom" style="color:red">Zoom to see more points</p>
+		<p id="ajax-wait" style="color:blue">Loading...</p>
+		<p id="ajax-some" style="color:green">Loaded.</p>
+		<p id="ajax-zero">Nothing to see.</p>
+		<p id="ajax-error" style="color:red">Error.</p>
+	</div>
+
+	<script>
+		var map = new L.Map('map');
+		map.setView([45.18, 5.7], 12);
+
+		// Baselayer
+		new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
+		}).addTo(map);
+
+		// OSM overpass layer
+		var osm = new L.GeoJSON.Ajax.OSM({
+			maxLatAperture: 0.5, // (°) latitude map max aperture for OSM POI request
+			timeout: 5, // (seconds) server max request time
+			idAjaxStatus: 'ajax-status', // HTML id element owning the loading status display
+
+			// Icons name translation (hotel & parking are implicit)
+			icons: {
+				camp_site: 'camping',
+				supermarket: 'ravitaillement',
+				convenience: 'ravitaillement'
+			},
+
+			// Label text translation (lowercase !)
+			language: {
+				hotel: 'h&ocirc;tel',
+				room: 'chambre',
+				camp_site: 'camping',
+				convenience: 'alimentation',
+				supermarket: 'supermarch&egrave;'
+			},
+
+			// Icons display style
+			style: function(feature) {
+				return {
+					iconUrl: 'http://v2.chemineur.fr/prod/chemtype/' + feature.properties.icon + '.png',
+					iconAnchor: [8, 4],
+					labelClass: 'etiquette',
+					remanent: true
+				};
+			}
+		}).addTo(map);
+	</script>
+</body>
+</html>

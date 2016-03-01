@@ -131,7 +131,7 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 		// L.GeoJSON init with blank content as we will get it later.
 		L.GeoJSON.prototype.initialize.call(this, null, options);
 
-		// Change class of id="ajax-status" to class="over-<STATUS>"
+		// Change class of id="ajax-status" to class="ajax-<STATUS>"
 		// <STATUS> = none | zoom | wait | some | zero | error
 		this.elAjaxStatus = document.getElementById(this.options.idAjaxStatus) || document.createElement('div');
 
@@ -157,6 +157,13 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 			this._map.on('moveend', this.reload, this);
 	},
 
+	onRemove: function (map) {
+		this.elAjaxStatus.className = '';
+		this._map.off('moveend', this.reload, this);
+
+		L.GeoJSON.prototype.onRemove.call(this, map);
+	},
+
 	// Build the final url request to send to the server
 	_getUrl: function() {
 		var argsGeoJSON = typeof this.options.argsGeoJSON == 'function' ? this.options.argsGeoJSON.call(this, this) : this.options.argsGeoJSON;
@@ -179,21 +186,23 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 		// If temporary disabled
 		if (this.options.disabled) {
 			this.redraw(); // Just erase the data
-			this.elAjaxStatus.className = 'over-none';
+			this.elAjaxStatus.className = 'ajax-none';
 			return;
 		}
 
 		// Zoom too large
-		var b = this._map.getBounds();
-		if (b._northEast.lng - b._southWest.lng > this.options.maxLatAperture) {
-			this.elAjaxStatus.className = 'over-zoom';
-			this.redraw(); // Just erase the data
-			return;
+		if (this._map) {
+			var b = this._map.getBounds();
+			if (b._northEast.lng - b._southWest.lng > this.options.maxLatAperture) {
+				this.elAjaxStatus.className = 'ajax-zoom';
+				this.redraw(); // Just erase the data
+				return;
+			}
 		}
 
 		// Send the request
 		this.ajaxRequest.send(null);
-		this.elAjaxStatus.className = 'over-wait';
+		this.elAjaxStatus.className = 'ajax-wait';
 	},
 
 	// Action when receiving data
@@ -220,7 +229,7 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 				var js = JSON.parse(json); // Get json data
 			} catch (e) {
 				alert('Json syntax error on ' + this._getUrl() + ' :\n' + json);
-				this.elAjaxStatus.className = 'over-error';
+				this.elAjaxStatus.className = 'ajax-error';
 				return;
 			}
 			// Perform a special calculation if necessary (used by OSM overpass)
@@ -230,9 +239,9 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 			// Add it to the layer
 			this.addData(js);
 
-			if (this.elAjaxStatus.className == 'over-wait')
+			if (this.elAjaxStatus.className == 'ajax-wait')
 				this.elAjaxStatus.className =
-				js.length || (js.features && js.features.length) ? 'over-some' : 'over-zero';
+				js.length || (js.features && js.features.length) ? 'ajax-some' : 'ajax-zero';
 		}
 	}
 });

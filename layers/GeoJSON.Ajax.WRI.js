@@ -21,7 +21,6 @@ L.GeoJSON.Ajax.WRIpoi = L.GeoJSON.Ajax.extend({
 				iconAnchor: [8, 8],
 				remanent: true,
 				title: feature.properties.nom,
-				popupAnchor: [0, -0],
 				degroup: 12 // Spread the icons when the cursor hover on a busy area.
 			};
 		}
@@ -42,7 +41,8 @@ L.GeoJSON.Ajax.WRImassifs = L.GeoJSON.Ajax.extend({
 				popupAnchor: [0, -5],
 				url: feature.properties.lien,
 				color: feature.properties.couleur,
-				weight: 2
+				weight: 2,
+				degroup: 12 
 			};
 		}
 	}

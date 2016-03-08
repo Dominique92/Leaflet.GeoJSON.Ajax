@@ -49,80 +49,102 @@ L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 			return {
 				data: r + ');out center;>;'
 			};
-		},
-
-		// Convert received data in geoJson format
-		tradJson: function(data) {
-			if (data.remark)
-				this.elAjaxStatus.className = 'ajax-zoom';
-
-			var geoJson = []; // Prepare geoJson object for Leaflet.GeoJSON display
-			for (var e in data.elements) {
-				var d = data.elements[e],
-					t = d.tags,
-					type = '',
-					icon = null;
-
-				// Find the right icon using services & icon options
-				for (s in this.options.services)
-					if (typeof t[s] == 'string' &&
-						this.options.services[s].search(t[s]) != -1) {
-						type = t[s];
-						icon = this.options.icons[t[s]] || t[s];
-					}
-					// Label text calculation
-				var adresses = [
-						t['addr:housenumber'],
-						t['addr:street'],
-						t['addr:postcode'],
-						t['addr:city']
-					],
-					language = this.options.language,
-					title = [
-						type,
-						t.stars ? '*'.repeat(t.stars) : '',
-						t.rooms ? t.rooms + ' rooms' : '',
-						t.place ? t.place + ' places' : '',
-						t.capacity ? t.capacity + ' places' : '',
-						'<a href="http://www.openstreetmap.org/' + (d.center ? 'way' : 'node') + '/' + d.id + '" target="_blank">&copy;</a>'
-					]
-					.join(' ')
-					.replace( // Word translation if necessary
-						new RegExp(Object.keys(language).join('|'), 'gi'),
-						function(m) {
-							return language[m.toLowerCase()];
-						}
-					),
-					popup = [
-						t.name ? '<b>' + t.name + '</b>' : '',
-						title.charAt(0).toUpperCase() + title.substr(1), // Uppercase the first letter
-						t.ele ? t.ele + ' m' : '',
-						t['contact:phone'] ? '<a href="tel:'+t['contact:phone'].replace(/[^0-9\+]+/ig, '')+'">'+t['contact:phone']+'</a>' : '',
-						t['phone'] ? '<a href="tel:'+t['phone'].replace(/[^0-9\+]+/ig, '')+'">'+t['phone']+'</a>' : '',
-						t.email ? '<a href="mailto:' + t.email + '">' + t.email + '</a>' : '',
-						t['addr:street'] ? adresses.join(' ') : '',
-						t.website ? '<a href="' + (t.website.search('http') ? 'http://' : '') + t.website + '" target="_blank">' + t.website + '</a>' : ''
-					];
-
-				if (d.center) // When item has a geometry, we need to get the center
-					Object.assign(d, d.center);
-
-				if (type && d.lon && d.lat)
-					geoJson.push({
-						type: 'Feature',
-						id: d.id,
-						properties: {
-							icon: icon,
-							title: '<p>' + popup.join('</p><p>') + '</p>'
-						},
-						geometry: {
-							type: 'Point',
-							coordinates: [d.lon, d.lat]
-						}
-					});
-			}
-			return geoJson;
 		}
+	},
+
+	// Label data formating
+	label: function(data) {
+		var t = data.tags;
+		return {
+			name: '<b>' + t.name + '</b>',
+			description: [
+				data.type,
+				'*'.repeat(t.stars),
+				t.rooms ? t.rooms + ' rooms' : '',
+				t.place ? t.place + ' places' : '',
+				t.capacity ? t.capacity + ' places' : '',
+				'<a href="http://www.openstreetmap.org/' + (data.center ? 'way' : 'node') + '/' + data.id + '">&copy;</a>'
+			],
+			phone: '<a href="tel:'+t.phone.replace(/[^0-9\+]+/ig, '')+'">'+t.phone+'</a>',
+			email: '<a href="mailto:' + t.email + '">' + t.email + '</a>',
+			address: [
+				t['addr:housenumber'],
+				t['addr:street'],
+				t['addr:postcode'],
+				t['addr:city']
+			],
+			website: '<a href="' + t.website + '>' + t.website + '</a>'
+		};
+	},
+
+	// Convert received data in geoJson format
+	_tradJson: function(data) {
+		if (data.remark)
+			this.elAjaxStatus.className = 'ajax-zoom';
+
+		var geoJson = []; // Prepare geoJson object for Leaflet.GeoJSON display
+		for (var e in data.elements) {
+			var d = data.elements[e],
+				t = d.tags,
+				icon = null;
+
+			// Find the right icon using services & icon options
+			for (s in this.options.services)
+				if (typeof t[s] == 'string' &&
+					this.options.services[s].search(t[s]) != -1) {
+					d.type = t[s];
+					icon = this.options.icons[t[s]] || t[s];
+				}
+			// Label text calculation
+			if (!t.phone)
+				t.phone = t['contact:phone'] || '';
+			delete t['contact:phone'];
+
+			// Add sheme to website if necessary
+			if (t.website && t.website.search('http'))
+				t.website = 'http://' + t.website;
+
+			var label = this.label (d);
+			if (typeof this.options.label == 'function')
+				label = this.options.label (d, label);
+
+			var language = this.options.language, // Need this for local usage in function(m)
+				description = label.description.join(' ')
+				.replace( // Word translation if necessary
+					new RegExp(Object.keys(language).join('|'), 'gi'),
+					function(m) {
+						return language[m.toLowerCase()];
+					}
+				),
+				popup = [
+					t.name ? label.name : '',
+					description.charAt(0).toUpperCase() + description.substr(1), // Uppercase the first letter
+					t.ele ? label.altitude : '',
+					t.phone ? label.phone : '',
+					t.email ? label.email : '',
+					t['addr:street'] ? label.address.join(' ') : '',
+					t.website ? label.website : '',
+					t.ext1, t.ext2, t.ext3 // User defined fields
+				];
+
+			if (d.center) // When item has a geometry, we need to get the center
+				Object.assign(d, d.center);
+
+			if (d.type && d.lon && d.lat)
+				geoJson.push({
+					type: 'Feature',
+					id: d.id,
+					properties: {
+						icon: icon,
+						title: '<p>' + popup.join('</p><p>').replace('<p></p>','') + '</p>'
+					},
+					geometry: {
+						type: 'Point',
+						coordinates: [d.lon, d.lat]
+					}
+				});
+		}
+		return geoJson;
 	},
 
 	error429: function() { // Too many requests or request timed out

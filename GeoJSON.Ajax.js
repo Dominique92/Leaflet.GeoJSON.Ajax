@@ -5,7 +5,7 @@
  *
  * Display remote layers with geoJSON format
  *
- * geoJSON Spécifications: http://geojson.org/geojson-spec.html
+ * geoJSON SpÃ©cifications: http://geojson.org/geojson-spec.html
  * With the great initial push from https://github.com/LeOSW42
  */
 
@@ -14,13 +14,15 @@
  */
 
 L.GeoJSON.Style = L.GeoJSON.extend({
+
 	// Modify the way the layer representing one of the features is displayed
 	_setLayerStyle: function(layer, layerStyle) {
 		// Merge layer style & feature properties.
 		var style = L.extend({},
 			layer.feature.properties, // Low priority: geoJSON properties.
-			typeof layerStyle == 'function' ? layerStyle.call(this, layer.feature) // When layer.options.style is a function
-			: layerStyle // Priority one: layer.options.style
+			typeof layerStyle == 'function'
+				? layerStyle.call(this, layer.feature) // When layer.options.style is a function
+				: layerStyle // Priority one: layer.options.style
 		);
 
 		// Use an icon file to display a marker.
@@ -84,25 +86,28 @@ L.GeoJSON.Style = L.GeoJSON.extend({
 
 	// Isolate too close markers when the mouse hover over the group.
 	_degroup: function(p1, delta) {
-		var ll1 = p1._latlng,
-			xy1 = this._map.latLngToLayerPoint(ll1); // XY point overflown.
-		for (l in this._layers) {
-			var p2 = this._layers[l]; // An other point.
-			if (!p2._lli) // Mem the initial position of each points.
-				p2._lli = p2._latlng;
-			if (p1._leaflet_id != p2._leaflet_id) {
-				var xy2 = this._map.latLngToLayerPoint(p2._lli), // XY other point.
-					dp = xy2.distanceTo(xy1); // Distance between the itarated point & the overflown point.
-				if (!dp) // If the 2 points are too close, we shift right one.
-					p2.setLatLng(this._map.layerPointToLatLng(xy2.add([delta, 0])));
-				else
-					p2.setLatLng(
-						dp > delta ? p2._lli // If it's far, we bring it at it initial position.
-						: [ // If not, we add to the existing shift.
-							ll1.lat + (p2._lli.lat - ll1.lat) * delta / dp,
-							ll1.lng + (p2._lli.lng - ll1.lng) * delta / dp
-						]
-					);
+		var ll1 = p1._latlng;
+		if (ll1) { // Only for markers
+			var xy1 = this._map.latLngToLayerPoint(ll1); // XY point overflown.
+			for (l in this._layers) {
+				var p2 = this._layers[l]; // An other point.
+				if (!p2._lli) // Mem the initial position of each points (_lli is local to this routine).
+					p2._lli = p2._latlng;
+				if (p2._latlng &&
+					p1._leaflet_id != p2._leaflet_id) {
+					var xy2 = this._map.latLngToLayerPoint(p2._lli), // XY other point.
+						dp = xy2.distanceTo(xy1); // Distance between the itarated point & the overflown point.
+					if (!dp) // If the 2 points are too close, we shift right one.
+						p2.setLatLng(this._map.layerPointToLatLng(xy2.add([delta, 0])));
+					else
+						p2.setLatLng(
+							dp > delta ? p2._lli // If it's far, we bring it at it initial position.
+							: [ // If not, we add to the existing shift.
+								ll1.lat + (p2._lli.lat - ll1.lat) * delta / dp,
+								ll1.lng + (p2._lli.lng - ll1.lng) * delta / dp
+							]
+						);
+				}
 			}
 		}
 	}
@@ -157,7 +162,7 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 			this._map.on('moveend', this.reload, this);
 	},
 
-	onRemove: function (map) {
+	onRemove: function(map) {
 		this.elAjaxStatus.className = '';
 		this._map.off('moveend', this.reload, this);
 
@@ -166,7 +171,10 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 
 	// Build the final url request to send to the server
 	_getUrl: function() {
-		var argsGeoJSON = typeof this.options.argsGeoJSON == 'function' ? this.options.argsGeoJSON.call(this, this) : this.options.argsGeoJSON;
+		var argsGeoJSON =
+			typeof this.options.argsGeoJSON == 'function'
+			? this.options.argsGeoJSON.call(this, this)
+			: this.options.argsGeoJSON;
 
 		// Add bbox param if necessary
 		if (this.options.bbox && this._map)
@@ -233,8 +241,8 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 				return;
 			}
 			// Perform a special calculation if necessary (used by OSM overpass)
-			if (typeof this.options.tradJson == 'function')
-				js = this.options.tradJson.call(this, js);
+			if (typeof this._tradJson == 'function')
+				js = this._tradJson.call(this, js);
 
 			// Add it to the layer
 			this.addData(js);

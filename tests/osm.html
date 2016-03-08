@@ -92,6 +92,16 @@
 				supermarket: 'supermarch&egrave;'
 			},
 
+			// Hover label fine tuning
+			label: function(data, label) {
+				if (data.tags.ele)
+					label.altitude = data.tags.ele + ' m';
+
+				label.description[5] = label.description[5].replace('>&copy;', ' target="_blank">&copy;');
+
+				return label;
+			},
+
 			// Icons display style
 			style: function(feature) {
 				return {

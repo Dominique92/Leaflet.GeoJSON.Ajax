@@ -41,8 +41,7 @@ L.GeoJSON.Ajax.WRImassifs = L.GeoJSON.Ajax.extend({
 				popupAnchor: [0, -5],
 				url: feature.properties.lien,
 				color: feature.properties.couleur,
-				weight: 2,
-				degroup: 12 
+				weight: 2
 			};
 		}
 	}

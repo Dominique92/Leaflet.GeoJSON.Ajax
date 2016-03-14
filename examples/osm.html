@@ -10,8 +10,8 @@
 	<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
 
 	<!-- GeoJSON.Ajax plugin -->
-	<script src="http://dominique92.github.io/MyLeaflet/github.com/Dominique92/Leaflet.GeoJSON.Ajax/GeoJSON.Ajax.js"></script>
-	<script src="http://dominique92.github.io/MyLeaflet/github.com/Dominique92/Leaflet.GeoJSON.Ajax/layers/GeoJSON.Ajax.OSM.js"></script>
+	<script src="../GeoJSON.Ajax.js"></script>
+	<script src="../layers/GeoJSON.Ajax.OSM.js"></script>
 
 	<style>
 		/* Labels */
@@ -35,6 +35,7 @@
 		.ajax-zoom #ajax-zoom,
 		.ajax-some #ajax-some,
 		.ajax-zero #ajax-zero,
+		.ajax-too #ajax-too,
 		.ajax-error #ajax-error {
 			display: initial !important;
 		}
@@ -48,16 +49,19 @@
 	<div id="map" style="width: 800px; height: 600px"></div>
 
 	<!-- OSM POI selection -->
-	<div><input type="checkbox" name="osm-categories[]" value="tourism~hotel" onclick="osm.reload()" />H&ocirc;tels</div>
-	<div><input type="checkbox" name="osm-categories[]" value="tourism~camp_site" onclick="osm.reload()" />Campings</div>
-	<div><input type="checkbox" name="osm-categories[]" value="shop~supermarket|convenience" onclick="osm.reload()" />Alimentation</div>
-	<div><input type="checkbox" name="osm-categories[]" value="amenity~parking" onclick="osm.reload()" />Parkings</div>
+	<div><input type="checkbox" name="osm-categories[]" id="hotel" value='["tourism"~"hotel"]' onclick="osm.reload()" />H&ocirc;tels</div>
+	<div><input type="checkbox" name="osm-categories[]" id="camping" value='["tourism"~"camp_site"]' onclick="osm.reload()" />Campings</div>
+	<div><input type="checkbox" name="osm-categories[]" id="ravitaillement" value='["shop"~"supermarket|convenience"]' onclick="osm.reload()" />Alimentation</div>
+	<div><input type="checkbox" name="osm-categories[]" id="parking" value='["amenity"="parking"]["access"!="private"]' onclick="osm.reload()" />Parkings</div>
+	<div><input type="checkbox" name="osm-categories[]" id="bus" value='["highway"="bus_stop"]' onclick="osm.reload()" />Bus</div>
+	<div><input type="checkbox" name="osm-categories[]" id="toilette" value='["amenity"="toilets"]' onclick="osm.reload()" />WC</div>
 
 	<div id="ajax-status">
 		<p id="ajax-zoom" style="color:red">Zoom to see more points</p>
 		<p id="ajax-wait" style="color:blue">Loading...</p>
 		<p id="ajax-some" style="color:green">Loaded.</p>
 		<p id="ajax-zero">Nothing to see.</p>
+		<p id="ajax-too">Too many points.</p>
 		<p id="ajax-error" style="color:red">Error.</p>
 	</div>
 
@@ -75,13 +79,6 @@
 			maxLatAperture: 0.5, // (°) latitude map max aperture for OSM POI request
 			timeout: 5, // (seconds) server max request time
 			idAjaxStatus: 'ajax-status', // HTML id element owning the loading status display
-
-			// Icons name translation (hotel & parking are implicit)
-			icons: {
-				camp_site: 'camping',
-				supermarket: 'ravitaillement',
-				convenience: 'ravitaillement'
-			},
 
 			// Label text translation (lowercase !)
 			language: {

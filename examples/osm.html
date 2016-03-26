@@ -46,8 +46,6 @@
 	<p>Leaflet extension OSM overpass features display</p>
 	<p>Sources on <a href= "https://github.com/Dominique92/Leaflet.GeoJSON.Ajax">Github: Dominique92/Leaflet.GeoJSON.Ajax</a></p>
 
-	<div id="map" style="width: 800px; height: 600px"></div>
-
 	<!-- OSM POI selection -->
 	<div><input type="checkbox" name="osm-categories[]" id="hotel" value='["tourism"~"hotel"]' onclick="osm.reload()" />H&ocirc;tels</div>
 	<div><input type="checkbox" name="osm-categories[]" id="camping" value='["tourism"~"camp_site"]' onclick="osm.reload()" />Campings</div>
@@ -57,13 +55,15 @@
 	<div><input type="checkbox" name="osm-categories[]" id="toilette" value='["amenity"="toilets"]' onclick="osm.reload()" />WC</div>
 
 	<div id="ajax-status">
-		<p id="ajax-zoom" style="color:red">Zoom to see more points</p>
-		<p id="ajax-wait" style="color:blue">Loading...</p>
-		<p id="ajax-some" style="color:green">Loaded.</p>
-		<p id="ajax-zero">Nothing to see.</p>
-		<p id="ajax-too">Too many points.</p>
-		<p id="ajax-error" style="color:red">Error.</p>
+		Load status: 
+		<span id="ajax-zoom" style="color:red">Zoom to see more points</span>
+		<span id="ajax-wait" style="color:blue">Loading...</span>
+		<span id="ajax-some" style="color:green">Loaded.</span>
+		<span id="ajax-zero">Nothing to see.</span>
+		<span id="ajax-too">Too many points.</span>
+		<span id="ajax-error" style="color:red">Error.</span>
 	</div>
+	<div id="map" style="width: 800px; height: 600px"></div>
 
 	<script>
 		var map = new L.Map('map');

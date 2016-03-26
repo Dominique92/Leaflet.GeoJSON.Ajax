@@ -10,11 +10,11 @@ This plugin works both on Leaflet V0.7 & V1.0
 
 DEMO
 ----
-[See a DEMO using Leaflet V0.7](http://dominique92.github.io/MyLeaflet/github.com/Dominique92/Leaflet.GeoJSON.Ajax/)
+[See a DEMO using Leaflet V0.7 here](http://dominique92.github.io/MyLeaflet/github.com/Dominique92/Leaflet.GeoJSON.Ajax/)
 
-[See a DEMO using Leaflet V1.0](http://dominique92.github.io/MyLeaflet/github.com/Dominique92/Leaflet.GeoJSON.Ajax/test/index-v1.0.html)
+[See a DEMO using Leaflet V1.0 here](http://dominique92.github.io/MyLeaflet/github.com/Dominique92/Leaflet.GeoJSON.Ajax/examples/index-v1.0.html)
 
-Usage
+USAGE
 -----
 ### For a geoJson remote URL:
 Create a L.GeoJSON.Ajax instance & add it to the map.

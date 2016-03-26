@@ -9,8 +9,14 @@
 	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
 	<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
 
+	<!-- Erictheise.rrose pluggin (optional) -->
+	<link rel="stylesheet" href="http://erictheise.github.io/rrose/stylesheets/leaflet.rrose.css" />
+	<script src="http://erictheise.github.io/rrose/javascripts/leaflet.rrose-src.js"></script>
+
 	<!-- This plugin -->
 	<script src="GeoJSON.Ajax.js"></script>
+
+	<!-- Test layers -->
 	<script src="layers/GeoJSON.Ajax.WRI.js"></script>
 
 	<style>
@@ -42,19 +48,15 @@
 
 <body>
 	<p>Leaflet extension for remote GeoJSON layers (Markers, Polylines, Polygons, ...)</p>
-	<p>Sources on <a href= "https://github.com/Dominique92/Leaflet.GeoJSON.Ajax">Github: Dominique92/Leaflet.GeoJSON.Ajax</a></p>
-	<p>This demo runs on Leaflet V<script>document.write(L.version)</script> &#10144; <a href="examples/index-v1.0.html" style="font-size:12px">See demo on Leaflet V1.0</a></p>
-	<div style="position: absolute;right:0;top:0"><a href="examples/index-v1.0.html">&gt;</a>&nbsp;</div>
-
-	<div id="ajax-status">
-		<p id="ajax-zoom">Zoom to see more points</p>
-		<p id="ajax-wait">Loading...</p>
-		<p id="ajax-some">Loaded.</p>
-		<p id="ajax-zero">Nothing to see.</p>
-	</div>
 
 	<div id="map" style="width: 800px; height: 600px"></div>
-	<p>Demo on <a href="examples/osm.html" style="font-size:12px">OSM overpass</a></p>
+	<div id="ajax-status">
+		Load status: 
+		<span id="ajax-zoom">Zoom to see more points</span>
+		<span id="ajax-wait">Loading...</span>
+		<span id="ajax-some">Loaded.</span>
+		<span id="ajax-zero">Nothing to see.</span>
+	</div>
 
 	<script>
 		map = new L.Map('map', {
@@ -76,5 +78,10 @@
 			]
 		});
 	</script>
+
+	<p>Sources on <a href= "https://github.com/Dominique92/Leaflet.GeoJSON.Ajax">Github: Dominique92/Leaflet.GeoJSON.Ajax</a></p>
+	<p>This demo runs on Leaflet V<script>document.write(L.version)</script> &#10144; <a href="examples/index-v1.0.html" style="font-size:12px">See demo on Leaflet V1.0</a></p>
+	<div style="position: absolute;right:0;top:0"><a href="examples/index-v1.0.html">&gt;</a>&nbsp;</div>
+	<p>Other demo on <a href="examples/osm.html">OSM overpass</a></p>
 </body>
 </html>

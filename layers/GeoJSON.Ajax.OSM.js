@@ -93,10 +93,11 @@ L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 				for (s in this.options.services)
 					for (ti in t)
 						if (this.options.services[s].indexOf(ti) != -1 && t[ti] &&
-							this.options.services[s].indexOf(t[ti]) != -1)
+							this.options.services[s].indexOf(t[ti]) != -1) {
 							d.icon = icon = s;
-
-						// Label text calculation
+							d.tag = t[ti];
+						}
+				// Label text calculation
 				if (!t.phone)
 					t.phone = t['contact:phone'] || '';
 				delete t['contact:phone'];
@@ -129,9 +130,10 @@ L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 						t.ext1, t.ext2, t.ext3 // User defined fields
 					];
 
-				if (d.center) // When item has a geometry, we need to get the center
-					Object.assign(d, d.center);
-
+				if (d.center) { // When item has a geometry, we need to get the center
+					d.lat = d.center.lat;
+					d.lon = d.center.lon;
+				}
 				if (d.type && d.lon && d.lat)
 					geoJson.push({
 						type: 'Feature',

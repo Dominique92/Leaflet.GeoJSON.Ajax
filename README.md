@@ -17,7 +17,9 @@ DEMO
 USAGE
 -----
 ### For a geoJson remote URL:
-Create a L.GeoJSON.Ajax instance & add it to the map.
+o Include L.GeoJSON.Style
+o Include L.GeoJSON.Ajax
+o Create a L.GeoJSON.Ajax instance & add it to the map.
 ```javascript
 ...
 new L.GeoJSON.Ajax(

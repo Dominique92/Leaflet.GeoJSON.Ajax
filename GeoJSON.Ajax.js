@@ -26,7 +26,7 @@ L.GeoJSON.Style = L.GeoJSON.extend({
 		);
 
 		// Use an icon file to display a marker.
-		if (style.iconUrl)
+		if (style.iconUrl && typeof layer.setIcon == 'function')
 			layer.setIcon(L.icon(style));
 
 		// Show a popup when clicking the marker.

@@ -38,8 +38,10 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 		else if (window.ActiveXObject)
 			this.ajaxRequest = new ActiveXObject('Microsoft.XMLHTTP');
 		else {
-			alert('Your browser doesn\'t support AJAX requests.');
-			exit;
+//DEBUG/*
+			console.log('Your browser doesn\'t support AJAX requests.');
+//DEBUG*/
+			return;
 		}
 		this.ajaxRequest.context = this; // Reference the layer object for further usage.
 		this.ajaxRequest.onreadystatechange = this._onreadystatechange; // Action when receiving data
@@ -76,33 +78,35 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 	},
 
 	reload: function() {
-		// Build the request
-		this.ajaxRequest.open(
-			'GET',
-			this._getUrl(),
-			true
-		);
+		if (this.ajaxRequest) {
+			// Build the request
+			this.ajaxRequest.open(
+				'GET',
+				this._getUrl(),
+				true
+			);
 
-		// If temporary disabled
-		if (this.options.disabled) {
-			this.redraw(); // Just erase the data
-			this.elAjaxStatus.className = 'ajax-none';
-			return;
-		}
-
-		// Zoom too large
-		if (this._map) {
-			var b = this._map.getBounds();
-			if (b._northEast.lng - b._southWest.lng > this.options.maxLatAperture) {
-				this.elAjaxStatus.className = 'ajax-zoom';
+			// If temporary disabled
+			if (this.options.disabled) {
 				this.redraw(); // Just erase the data
+				this.elAjaxStatus.className = 'ajax-none';
 				return;
 			}
-		}
 
-		// Send the request
-		this.ajaxRequest.send(null);
-		this.elAjaxStatus.className = 'ajax-wait';
+			// Zoom too large
+			if (this._map) {
+				var b = this._map.getBounds();
+				if (b._northEast.lng - b._southWest.lng > this.options.maxLatAperture) {
+					this.elAjaxStatus.className = 'ajax-zoom';
+					this.redraw(); // Just erase the data
+					return;
+				}
+			}
+
+			// Send the request
+			this.ajaxRequest.send(null);
+			this.elAjaxStatus.className = 'ajax-wait';
+		}
 	},
 
 	// Action when receiving data
@@ -113,8 +117,10 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 			e.target.context.redraw(e.target.responseText);
 		else if (typeof e.target.context['error' + e.target.status] == 'function')
 			e.target.context['error' + e.target.status].call(e.target.context);
+//DEBUG/*
 		else if (e.target.status)
-			alert('ajaxRequest error status = ' + e.target.status + ' calling ' + e.target.context._getUrl());
+			console.log('ajaxRequest error status = ' + e.target.status + ' calling ' + e.target.context._getUrl());
+//DEBUG*/
 	},
 
 	redraw: function(json) {
@@ -128,7 +134,9 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 			try {
 				var js = JSON.parse(json); // Get json data
 			} catch (e) {
-				alert('Json syntax error on ' + this._getUrl() + ' :\n' + json);
+//DEBUG/*
+				console.log('Json syntax error on ' + this._getUrl() + ' :\n' + json);
+//DEBUG*/
 				this.elAjaxStatus.className = 'ajax-error';
 				return;
 			}

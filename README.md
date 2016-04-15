@@ -17,9 +17,9 @@ DEMO
 USAGE
 -----
 ### For a geoJson remote URL:
-o Include L.GeoJSON.Style
-o Include L.GeoJSON.Ajax
-o Create a L.GeoJSON.Ajax instance & add it to the map.
+- Include L.GeoJSON.Style
+- Include L.GeoJSON.Ajax
+- Create a L.GeoJSON.Ajax instance & add it to the map.
 ```javascript
 ...
 new L.GeoJSON.Ajax(
@@ -43,31 +43,31 @@ new L.GeoJSON.Ajax(
 ```
 
 ### Properties pairs `"<NAME>":<VALUE>` can be:
-o Markers:
+- Markers:
 * `iconUrl: <string>,` // Url of icon image
 * `iconSize: [<int>, <int>] | default=img file size,` // Size of the icon.
 * `iconAnchor: [<int>, <int>] | default=[middle,top],` // Point of the icon which will correspond to marker's location
 * `degroup: <int>,` // Isolate too close markers by a number of pixels when the mouse hover over the group.
 * Or any of the following [L.Marker options](http://leafletjs.com/reference.html#marker-options)
 
-o Poly:
+- Poly:
 * Any of the following [L.Path options](http://leafletjs.com/reference.html#path-options)
 
-o Display a label when hovering the feature:
+- Display a label when hovering the feature:
 * `title: <string>,` // Hover label
 * `remanent: <boolean> | default=false,` // Whether or not the label remains when the mouse leaves the property area or when hovering another feature
 * `popupAnchor: [<int>, <int>] | default=[middle,top]`, // Point from which the popup should open relative to the iconAnchor
 * `labelClass: <string>,` // Optional: CSS class to apply to the label
 
-o Display a popup when clicking the feature:
+- Display a popup when clicking the feature:
 * `popup: <string>,` // Popup label
 * `popupAnchor`,
 * `popupClass,`
 
-o Action when clicking the feature:
+- Action when clicking the feature:
 * `url: <string>,` // Url where to navigate when the feature is clicked
 
-o General:
+- General:
 * Or any of the following [L.GeoJSON options](http://leafletjs.com/reference.html#geojson-options)
 
 ### <geoJson> URL return must respect the [geoJson format](http://geojson.org/geojson-spec.html):

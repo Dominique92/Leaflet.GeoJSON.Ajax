@@ -55,7 +55,7 @@ L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 		return {
 			name: '<b>' + t.name + '</b>',
 			description: [
-				data.icon,
+				data.icon_name,
 				'*'.repeat(t.stars),
 				t.rooms ? t.rooms + ' rooms' : '',
 				t.place ? t.place + ' places' : '',
@@ -87,14 +87,14 @@ L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 			for (var e in data.elements) {
 				var d = data.elements[e],
 					t = d.tags,
-					icon = null;
+					icon_name = null;
 
 				// Find the right icon using services & icon options
 				for (s in this.options.services)
 					for (ti in t)
 						if (this.options.services[s].indexOf(ti) != -1 && t[ti] &&
 							this.options.services[s].indexOf(t[ti]) != -1) {
-							d.icon = icon = s;
+							d.icon_name = icon_name = s;
 							d.tag = t[ti];
 						}
 				// Label text calculation
@@ -139,8 +139,8 @@ L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 						type: 'Feature',
 						id: d.id,
 						properties: {
-							icon: icon,
-							title: '<p>' + popup.join('</p><p>').replace('<p></p>', '') + '</p>'
+							icon_name: icon_name,
+							title: ('<p>' + popup.join('</p><p>') + '</p>').replace(/<p>\s*<\/p>/ig, '')
 						},
 						geometry: {
 							type: 'Point',

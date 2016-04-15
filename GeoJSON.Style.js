@@ -9,8 +9,23 @@
  * With the great initial push from https://github.com/LeOSW42
  */
 
-L.GeoJSON.Style = L.GeoJSON.extend({
+/* Add setStyle function to Marker to be compatible with Poly*
+ * This makes the Marker's options as style parameter
+ */
+L.Marker.include({
+	setStyle: function (style) {
+		L.setOptions(this, style);
 
+		if (this._map) {
+			this._initIcon();
+			this.update();
+		}
+
+		return this;
+	},
+});
+
+L.GeoJSON.Style = L.GeoJSON.extend({
 	// Modify the way the layer representing one of the features is displayed
 	_setLayerStyle: function(layer, layerStyle) {
 		// Merge layer style & feature properties.
@@ -45,6 +60,10 @@ L.GeoJSON.Style = L.GeoJSON.extend({
 				else
 					document.location.href = style.url;
 			});
+
+		// Drag the icon & take actions
+		if (typeof style.draggable == 'function')
+			layer.on('dragstart drag dragend', style.draggable, this);
 
 		layer.on('mouseover mousemove', function(e) {
 			if (style.degroup)

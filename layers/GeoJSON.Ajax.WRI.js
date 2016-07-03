@@ -9,16 +9,18 @@
 // Europe mountain points of interest
 L.GeoJSON.Ajax.WRIpoi = L.GeoJSON.Ajax.extend({
 	options: {
-		urlGeoJSON: 'http://www.refuges.info/api/bbox',
+		urlGeoJSON: window.location.href.match(/[a-z]*/i)[0]+ // Use the same protocol than the referer.
+			'://www.refuges.info/api/bbox',
 		argsGeoJSON: {
 			type_points: 'all'
 		},
 		bbox: true,
 		style: function(feature) {
 			return {
-				title: feature.properties.nom,
+				popup: feature.properties.nom,
 				remanent: true,
-				iconUrl: 'http://www.refuges.info/images/icones/' + feature.properties.type.icone + '.png',
+				iconUrl: window.location.href.match(/[a-z]*/i)[0]+
+					'://www.refuges.info/images/icones/' + feature.properties.type.icone + '.png',
 				iconAnchor: [8, 8],
 				url: feature.properties.lien,
 				degroup: 12 // Spread the icons when the cursor hover on a busy area.
@@ -30,14 +32,15 @@ L.GeoJSON.Ajax.WRIpoi = L.GeoJSON.Ajax.extend({
 // French mountain limits
 L.GeoJSON.Ajax.WRImassifs = L.GeoJSON.Ajax.extend({
 	options: {
-		urlGeoJSON: 'http://www.refuges.info/api/polygones',
+		urlGeoJSON: window.location.href.match(/[a-z]*/i)[0]+
+			'://www.refuges.info/api/polygones',
 		argsGeoJSON: {
 			type_polygon: 1
 		},
 		bbox: true,
 		style: function(feature) {
 			return {
-				title: feature.properties.nom,
+				popup: feature.properties.nom,
 				url: feature.properties.lien,
 				color: feature.properties.couleur,
 				weight: 2

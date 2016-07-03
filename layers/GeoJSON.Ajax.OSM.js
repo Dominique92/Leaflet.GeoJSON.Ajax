@@ -10,7 +10,7 @@
 
 L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 	options: {
-		urlGeoJSON: 'http://overpass-api.de/api/interpreter',
+		urlGeoJSON: 'https://overpass-api.de/api/interpreter',
 		bbox: true,
 		maxLatAperture: 0.25, // (Latitude degrees) The layer will only be displayed if it's zooms to less than this latitude aperture degrees.
 		timeout: 25, // Server timeout (seconds)
@@ -140,7 +140,7 @@ L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 						id: d.id,
 						properties: {
 							icon_name: icon_name,
-							title: ('<p>' + popup.join('</p><p>') + '</p>').replace(/<p>\s*<\/p>/ig, '')
+							popup: ('<p>' + popup.join('</p><p>') + '</p>').replace(/<p>\s*<\/p>/ig, '')
 						},
 						geometry: {
 							type: 'Point',

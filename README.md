@@ -54,15 +54,10 @@ new L.GeoJSON.Ajax(
 * Any of the following [L.Path options](http://leafletjs.com/reference.html#path-options)
 
 - Display a label when hovering the feature:
-* `title: <string>,` // Hover label
+* `popup: <string>,` // Popup text
 * `remanent: <boolean> | default=false,` // Whether or not the label remains when the mouse leaves the property area or when hovering another feature
 * `popupAnchor: [<int>, <int>] | default=[middle,top]`, // Point from which the popup should open relative to the iconAnchor
-* `labelClass: <string>,` // Optional: CSS class to apply to the label
-
-- Display a popup when clicking the feature:
-* `popup: <string>,` // Popup label
-* `popupAnchor`,
-* `popupClass,`
+* `popupClass: <string>,` // Optional: CSS class to apply to the label
 
 - Action when clicking the feature:
 * `url: <string>,` // Url where to navigate when the feature is clicked

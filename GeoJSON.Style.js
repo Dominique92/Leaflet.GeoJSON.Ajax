@@ -40,17 +40,39 @@ L.GeoJSON.Style = L.GeoJSON.extend({
 		if (style.iconUrl && typeof layer.setIcon == 'function')
 			layer.setIcon(L.icon(style));
 
-		// Show a popup when clicking a marker.
-		if (style.popup)
-			layer.on('click', function(e) {
-				layer.off('mouseout', this._closePopup); // Don't close on moving out
-				var popup = L.popup({
-						className: style.popupClass ? style.popupClass : ''
-					})
+		layer.on('mouseover', function(e) {
+			// Display a label when hover the feature.
+			if (style.popup) {
+				var popupAnchor = style.popupAnchor || [0, -2];
+				new(L.Rrose || L.Popup)({
+					offset: new L.Point(popupAnchor[0], popupAnchor[1]), // Avoid to cover the marker with the popup.
+					className: style.popupClass ? style.popupClass : '',
+					closeButton: false,
+					autoPan: false
+				})
+				.setContent(style.popup)
 					.setLatLng(e.latlng)
-					.setContent(style.popup)
 					.openOn(this._map);
-			});
+					
+				// Close the label when moving out of the marker
+				if (style.remanent)
+					this.popupLatlng = e.latlng; // Mem the popup position to be able to delete it when moving far
+				else {
+					layer.off('mouseout', this._closePopup); // Only once
+					layer.on('mouseout', this._closePopup); // Use named function to not off all mouseout when layer off 'mouseout'
+				}
+			}
+		}, this);
+
+		// Close popups when moving > 150px far or leaving the map
+		this._map.on('mousemove mouseout', function(e) {
+			if (typeof this.popupLatlng == 'object') {
+				var popupXY = this._map.latLngToLayerPoint(this.popupLatlng),
+					dist = Math.hypot(popupXY.x - e.layerPoint.x, popupXY.y - e.layerPoint.y);
+				if (dist > 150 || e.type == 'mouseout')
+					this._map.closePopup();
+			}
+		}, this);
 
 		// Navigate the the url when clicking a feature.
 		if (style.url)
@@ -61,34 +83,15 @@ L.GeoJSON.Style = L.GeoJSON.extend({
 					document.location.href = style.url;
 			});
 
+		// Isolate too close markers when the mouse hovers over the group.
+		layer.on('mouseover', function(e) {
+			if (style.degroup)
+				this._degroup(layer, style.degroup);
+		}, this);
+
 		// Drag the icon & take actions
 		if (typeof style.draggable == 'function')
 			layer.on('dragstart drag dragend', style.draggable, this);
-
-		layer.on('mouseover mousemove', function(e) {
-			if (style.degroup)
-				this._degroup(layer, style.degroup);
-
-			// Display a label when hover the feature.
-			if (style.title) {
-				var popupAnchor = style.popupAnchor || [0, -2];
-				new(L.Rrose || L.Popup)({
-					offset: new L.Point(popupAnchor[0], popupAnchor[1]), // Avoid to cover the marker with the popup.
-					className: style.labelClass ? style.labelClass : '',
-					closeButton: false,
-					autoPan: false
-				})
-				.setContent(style.title)
-					.setLatLng(e.latlng)
-					.openOn(this._map);
-
-				// Close the label when moving out of the marker
-				if (!style.remanent) {
-					layer.off('mouseout', this._closePopup); // Only once
-					layer.on('mouseout', this._closePopup); // Use named function to not off all mouseout when layer off 'mouseout'
-				}
-			}
-		}, this);
 
 		// Finish as usual.
 		L.GeoJSON.prototype._setLayerStyle.call(this, layer, style);
@@ -99,7 +102,6 @@ L.GeoJSON.Style = L.GeoJSON.extend({
 			this._map.closePopup();
 	},
 
-	// Isolate too close markers when the mouse hover over the group.
 	_degroup: function(p1, delta) {
 		var ll1 = p1._latlng;
 		if (ll1) { // Only for markers

@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-	<title>Leaflet extension for remote GeoJSON layers</title>
+	<title>Leaflet OSM overpass layer</title>
 	<meta charset="utf-8">
 	<link rel="icon" type="image/png" href="http://leafletjs.com/docs/images/favicon.ico" />
 
 	<!-- Leaflet kernel -->
-	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
-	<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+	<link  href="../../../Leaflet/Leaflet/dist/leaflet.css" rel="stylesheet" />
+	<script src="../../../Leaflet/Leaflet/dist/leaflet-src.js"></script>
 
 	<!-- GeoJSON.Ajax plugin -->
 	<script src="../GeoJSON.Style.js"></script>
 	<script src="../GeoJSON.Ajax.js"></script>
 	<script src="../layers/GeoJSON.Ajax.OSM.js"></script>
 
-	<style>
+	<style> /* For loading status */
 		/* Labels */
 		.etiquette .leaflet-popup-content-wrapper {
 			border-radius: 8px;
@@ -45,11 +45,9 @@
 
 <body>
 	<p>Leaflet extension OSM overpass features display</p>
-	<p>Sources & docs on
-		<a href= "https://github.com/Dominique92/Leaflet.GeoJSON.Ajax">Github: Dominique92/Leaflet.GeoJSON.Ajax</a>
-		<a href= "http://wiki.openstreetmap.org/wiki/Overpass_API/Language_Guide">Overpass API/Language Guide</a>
-		<a href= "http://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL#By_tag_.28has-kv.29">Overpass API/Overpass QL</a>
-	</p>
+	<p>This demo runs on Leaflet V<script>document.write(L.version)</script> and is also supported on Leaflet V1.0 (no demo)</p>
+
+	<div id="map" style="width: 800px; height: 600px"></div>
 
 	<!-- OSM POI selection -->
 	<div><input type="checkbox" name="osm-categories[]" id="hotel" value='["tourism"~"hotel"]' onclick="osm.reload()" checked="checked" />H&ocirc;tels</div>
@@ -69,66 +67,27 @@
 		<span id="ajax-error" style="color:red">Error.</span>
 	</div>
 
-	<div id="map" style="width: 800px; height: 600px"></div>
-
-	<script>
-		var map = new L.Map('map');
-		map.setView([45.18, 5.7], 12);
-
-		// Baselayer
-		new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-			attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
-		}).addTo(map);
-
-		// OSM overpass layer
-		var osm = new L.GeoJSON.Ajax.OSM({
-			maxLatAperture: 0.5, // (°) latitude map max aperture for OSM POI request
-			timeout: 5, // (seconds) server max request time
-			idAjaxStatus: 'ajax-status', // HTML id element owning the loading status display
-
-			// Label text translation (lowercase !)
-			language: {
-				hotel: 'h&ocirc;tel',
-				room: 'chambre',
-				camp_site: 'camping',
-				convenience: 'alimentation',
-				supermarket: 'supermarch&egrave;'
-			},
-
-			// Icons display style
-			style: function(feature) {
-				return {
-					iconUrl: 'http://v2.chemineur.fr/prod/chemtype/' + feature.properties.icon_name + '.png',
-					iconAnchor: [8, 4],
-					popupClass: 'etiquette',
-					remanent: true
-				};
-			}
-		}).addTo(map);
-	</script>
-
 	<!-- Doc & debug -->
-	<a href="https://github.com/Dominique92/Leaflet.GeoJSON.Ajax/blob/master/layers/GeoJSON.Ajax.OSM.js"
-	   style="position:absolute;top:0;right:0"
-	   title="Sources & docs">
-		<img src="../../../../src/images/fork_me.png" />
-	</a>
-	<a href="../tests/osm.html"
+	<p>
+		See the javascript code of this demo
+		<a href="https://github.com/Dominique92/Leaflet.GeoJSON.Ajax/blob/master/GeoJSON.Ajax.js">here</a> and
+		<a href="https://github.com/Dominique92/Leaflet.GeoJSON.Ajax/blob/master/layers/GeoJSON.Ajax.OSM.js">here</a> and
+		<a href="osm.js">here</a>
+	</p>
+	<p>Sources & docs on
+		<a href= "https://github.com/Dominique92/Leaflet.GeoJSON.Ajax">Github: Dominique92/Leaflet.GeoJSON.Ajax</a> &nbsp;
+		<a href= "http://wiki.openstreetmap.org/wiki/Overpass_API/Language_Guide">Overpass API/Language Guide</a> &nbsp;
+		<a href= "http://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL#By_tag_.28has-kv.29">Overpass API/Overpass QL</a>
+	</p>
+
+	<a href="wc.html"
 	   style="position:absolute;top:150px;right:0;text-decoration:none;font-size:large"
-	   title="Debug mode">
-		&#x2713;
+	   title="Test WC">
+		&#10144;
 	</a>
-<!--
-	<a href="../tests"
-	   style="position:absolute;top:150px;right:0;text-decoration:none;font-size:large"
-	   title="Next test">
-		&#10154;
-	</a>
-	<a href="https://github.com/Dominique92/MyLeaflet"
-	   style="position:absolute;top:220px;right:0;text-decoration:none"
-	   title="Test on Leaflet V1.0">
-		v1.0
-	</a>
--->
+	<p>Return to <a href= "..">Leaflet.GeoJSON.Ajax</a></p>
+
+	<!-- Insert the javascript after all <div> are defined -->
+	<script src="osm.js"></script>
 </body>
 </html>

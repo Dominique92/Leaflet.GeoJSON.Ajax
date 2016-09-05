@@ -5,22 +5,27 @@
 	<meta charset="utf-8">
 	<link rel="icon" type="image/png" href="http://leafletjs.com/docs/images/favicon.ico" />
 
+	<?php if (!is_dir ('../../Dominique92')) { // Run .html or standalone .php ?>
+		<base href="http://dominique92.github.io/MyLeaflet/github.com/Dominique92/Leaflet.GeoJSON.Ajax/" />
+	<?php } ?>
+
 	<!-- Leaflet kernel -->
-	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
-	<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+	<link  href="../../Leaflet/Leaflet/dist/leaflet.css" rel="stylesheet" />
+	<script src="../../Leaflet/Leaflet/dist/leaflet-src.js"></script>
 
 	<!-- Erictheise.rrose pluggin (optional) -->
-	<link rel="stylesheet" href="http://erictheise.github.io/rrose/stylesheets/leaflet.rrose.css" />
-	<script src="http://erictheise.github.io/rrose/javascripts/leaflet.rrose-src.js"></script>
+	<link  href="../../erictheise/rrose/leaflet.rrose.css" rel="stylesheet" />
+	<script src="../../erictheise/rrose/leaflet.rrose-src.js"></script>
 
 	<!-- This plugin -->
 	<script src="GeoJSON.Style.js"></script>
 	<script src="GeoJSON.Ajax.js"></script>
+	<script src="layers/GeoJSON.Ajax.OSM.js"></script>
 
 	<!-- Test layers -->
 	<script src="layers/GeoJSON.Ajax.WRI.js"></script>
 
-	<style>
+	<style> /* For loading status */
 		/* Labels */
 		.etiquette .leaflet-popup-content-wrapper {
 			border-radius: 8px;
@@ -49,8 +54,12 @@
 
 <body>
 	<p>Leaflet extension for remote GeoJSON layers (Markers, Polylines, Polygons, ...)</p>
+	<p>This demo runs on Leaflet V<script>document.write(L.version)</script> &#10144; <a href="examples/v1.0.html">See demo on Leaflet V1.0</a></p>
 
+	<!-- Map block -->
 	<div id="map" style="width: 800px; height: 600px"></div>
+
+	<!-- Loading status block -->
 	<div id="ajax-status">
 		Load status: 
 		<span id="ajax-zoom">Zoom to see more points</span>
@@ -59,46 +68,20 @@
 		<span id="ajax-zero">Nothing to see.</span>
 	</div>
 
-	<script>
-		map = new L.Map('map', {
-			center: new L.LatLng(46.8, 2),
-			zoom: 6,
-			layers: [
-				// Baselayer
-				new L.TileLayer('http://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
-					attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
-				}),
-
-				// Europe mountain points of interest
-				new L.GeoJSON.Ajax.WRIpoi({
-					idAjaxStatus: 'ajax-status'
-				}),
-
-				// French mountain limits
-				new L.GeoJSON.Ajax.WRImassifs()
-			]
-		});
-	</script>
-
+	<!-- Doc & debug -->
+	<p>See the javascript code of this demo <a href="index.js">here</a> and <a href="layers/GeoJSON.Ajax.WRI.js">here</a></p>
+	<p>Download & run <a href="index.html">this file</a> on your computer</p>
 	<p>Sources & docs on <a href= "https://github.com/Dominique92/Leaflet.GeoJSON.Ajax">Github: Dominique92/Leaflet.GeoJSON.Ajax</a></p>
-	<p>This demo runs on Leaflet V<script>document.write(L.version)</script> &#10144; <a href="examples/index-v1.0.html" style="font-size:12px">See demo on Leaflet V1.0</a></p>
 	<p>Other demo on <a href="examples/osm.html">OSM overpass</a></p>
 
-	<!-- Doc & debug -->
 	<a href="https://github.com/Dominique92/Leaflet.GeoJSON.Ajax"
 	   style="position:absolute;top:0;right:0"
 	   title="Sources & docs">
 		<img src="../../../src/images/fork_me.png" />
 	</a>
-	<a href="tests"
-	   style="position:absolute;top:150px;right:0;text-decoration:none;font-size:large"
-	   title="Debug mode">
-		&#x2713;
-	</a>
-	<a href="examples/index-v1.0.html"
-	   style="position:absolute;top:190px;right:0;text-decoration:none"
-	   title="Test on Leaflet V1.0">
-		v1.0
-	</a>
+	<p>Visit my fully integrated <a href= "https://github.com/Dominique92/MyLeaflet">Dominique92/MyLeaflet</a> library</p>
+
+	<!-- Insert the javascript after all <div> are defined -->
+	<script src="index.js"></script>
 </body>
 </html>

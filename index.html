@@ -10,46 +10,17 @@
 	<?php } ?>
 
 	<!-- Leaflet kernel -->
-	<link  href="../../Leaflet/Leaflet/dist/leaflet.css" rel="stylesheet" />
-	<script src="../../Leaflet/Leaflet/dist/leaflet-src.js"></script>
-
-	<!-- Erictheise.rrose pluggin (optional) -->
-	<link  href="../../erictheise/rrose/leaflet.rrose.css" rel="stylesheet" />
-	<script src="../../erictheise/rrose/leaflet.rrose-src.js"></script>
+	<link  href="//cdn.leafletjs.com/leaflet-0.7/leaflet.css" rel="stylesheet"/>
+	<script src="//cdn.leafletjs.com/leaflet-0.7/leaflet.js"></script>
 
 	<!-- This plugin -->
 	<script src="GeoJSON.Style.js"></script>
 	<script src="GeoJSON.Ajax.js"></script>
-	<script src="layers/GeoJSON.Ajax.OSM.js"></script>
 
 	<!-- Test layers -->
 	<script src="layers/GeoJSON.Ajax.WRI.js"></script>
 
-	<style> /* For loading status */
-		/* Labels */
-		.etiquette .leaflet-popup-content-wrapper {
-			border-radius: 8px;
-		}
-		.etiquette .leaflet-popup-content,
-		.etiquette .leaflet-popup-content p {
-			margin: 3px;
-		}
-
-		/* Status display */
-		#ajax-status * {
-			display: none;
-		}
-		#ajax-status div {
-			float: none;
-		}
-		.ajax-none #ajax-none,
-		.ajax-wait #ajax-wait,
-		.ajax-zoom #ajax-zoom,
-		.ajax-some #ajax-some,
-		.ajax-zero #ajax-zero {
-			display: initial !important;
-		}
-	</style>
+	<link href="index.css" rel="stylesheet"/>
 </head>
 
 <body>
@@ -73,13 +44,13 @@
 	<p>Download & run <a href="index.html">this file</a> on your computer</p>
 	<p>Sources & docs on <a href= "https://github.com/Dominique92/Leaflet.GeoJSON.Ajax">Github: Dominique92/Leaflet.GeoJSON.Ajax</a></p>
 	<p>Other demo on <a href="examples/osm.html">OSM overpass</a></p>
+	<p>Visit my fully integrated <a href= "https://github.com/Dominique92/MyLeaflet">Dominique92/MyLeaflet</a> library</p>
 
 	<a href="https://github.com/Dominique92/Leaflet.GeoJSON.Ajax"
 	   style="position:absolute;top:0;right:0"
 	   title="Sources & docs">
-		<img src="../../../src/images/fork_me.png" />
+		<img src="http://www.zimuel.it/img/forkme.png" />
 	</a>
-	<p>Visit my fully integrated <a href= "https://github.com/Dominique92/MyLeaflet">Dominique92/MyLeaflet</a> library</p>
 
 	<!-- Insert the javascript after all <div> are defined -->
 	<script src="index.js"></script>

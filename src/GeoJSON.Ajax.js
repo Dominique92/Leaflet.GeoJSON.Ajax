@@ -112,7 +112,7 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 	// Action when receiving data
 	_onreadystatechange: function(e) {
 //DEBUG/*
-		console.log('Ajax status : ' + e.target.readyState + '\n');
+//		console.log('Ajax status : ' + e.target.readyState + '\n');
 //DEBUG*/
 
 		if (e.target.readyState < 3) // Connection in progress
@@ -128,6 +128,12 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 	},
 
 	redraw: function(json, status) {
+		// Empty the layer
+		for (l in this._layers)
+			if (this._map)
+				this._map.removeLayer(this._layers[l]);
+		this._layers = [];
+
 		if (json) {
 			try {
 				var js = JSON.parse(json); // Get json data
@@ -143,12 +149,6 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 
 			// Call virtual optional work on flow
 			js = this._tradJson.call(this, js);
-
-			// Empty the layer
-			for (l in this._layers)
-				if (this._map)
-					this._map.removeLayer(this._layers[l]);
-			this._layers = [];
 
 			// Add the data to the layer
 			this.addData(js);

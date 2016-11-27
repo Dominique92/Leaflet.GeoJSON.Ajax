@@ -6,24 +6,15 @@
 	<link rel="icon" type="image/png" href="http://leafletjs.com/docs/images/favicon.ico" />
 
 	<!-- Leaflet kernel -->
-	<link  href="../../../Leaflet/Leaflet/dist/leaflet.css" rel="stylesheet" />
-	<script src="../../../Leaflet/Leaflet/dist/leaflet-src.js"></script>
+	<link  href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" rel="stylesheet" />
+	<script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
 
 	<!-- GeoJSON.Ajax plugin -->
-	<script src="../GeoJSON.Style.js"></script>
-	<script src="../GeoJSON.Ajax.js"></script>
-	<script src="../layers/GeoJSON.Ajax.OSM.js"></script>
+	<script src="../src/GeoJSON.Style.js"></script>
+	<script src="../src/GeoJSON.Ajax.js"></script>
+	<script src="../src/layers/GeoJSON.Ajax.OSM.js"></script>
 
 	<style> /* For loading status */
-		/* Labels */
-		.etiquette .leaflet-popup-content-wrapper {
-			border-radius: 8px;
-		}
-		.etiquette .leaflet-popup-content p,
-		.etiquette .leaflet-rrose-content p {
-			margin: 2px !important;
-		}
-
 		/* Status icon */
 		#ajax-status * {
 			display: none;
@@ -45,7 +36,7 @@
 
 <body>
 	<p>Leaflet extension OSM overpass features display</p>
-	<p>This demo runs on Leaflet V<script>document.write(L.version)</script> and is also supported on Leaflet V1.0 (no demo)</p>
+	<p>This demo runs on Leaflet V<script>document.write(L.version)</script> and is also supported on Leaflet V0.7 (no demo)</p>
 
 	<div id="map" style="width: 800px; height: 600px"></div>
 
@@ -80,12 +71,11 @@
 		<a href= "http://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL#By_tag_.28has-kv.29">Overpass API/Overpass QL</a>
 	</p>
 
-	<a href="wc.html"
-	   style="position:absolute;top:150px;right:0;text-decoration:none;font-size:large"
-	   title="Test WC">
+	<a href="../../Leaflet.Map.MultiVendors-master"
+		style="position:absolute;top:150px;right:0;text-decoration:none;font-size:large"
+		title="Next test">
 		&#10144;
 	</a>
-	<p>Return to <a href= "..">Leaflet.GeoJSON.Ajax</a></p>
 
 	<!-- Insert the javascript after all <div> are defined -->
 	<script src="osm.js"></script>

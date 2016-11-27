@@ -13,7 +13,7 @@
 
 L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 	options: {
-		urlGeoJSON: 'https://overpass-api.de/api/interpreter',
+		urlGeoJSON: '//api.openstreetmap.fr/oapi/interpreter',
 		bbox: true,
 		maxLatAperture: 0.25, // (Latitude degrees) The layer will only be displayed if it's zooms to less than this latitude aperture degrees.
 		timeout: 25, // Server timeout (seconds)
@@ -104,10 +104,6 @@ L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 				if (!t.phone)
 					t.phone = t['contact:phone'] || '';
 				delete t['contact:phone'];
-
-				// Add sheme to website if necessary
-				if (t.website && t.website.search('http'))
-					t.website = 'http://' + t.website;
 
 				var label =
 					typeof this.options.label == 'function'

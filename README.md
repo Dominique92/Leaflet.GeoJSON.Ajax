@@ -10,9 +10,9 @@ This plugin works both on Leaflet V0.7 & V1.0
 
 DEMO
 ----
-[See a DEMO using Leaflet V0.7 here](http://dominique92.github.io/MyLeaflet/github.com/Dominique92/Leaflet.GeoJSON.Ajax/)
+[See a DEMO using Leaflet V0.7 here](https://dominique92.github.io/MyLeaflet/lib/Leaflet.GeoJSON.Ajax-master/)
 
-[See a DEMO using Leaflet V1.0 here](http://dominique92.github.io/MyLeaflet/github.com/Dominique92/Leaflet.GeoJSON.Ajax/examples/v1.0.html)
+[See a DEMO using Leaflet V1.0 here](https://dominique92.github.io/MyLeaflet/lib/Leaflet.GeoJSON.Ajax-master/examples/v1.0.html)
 
 USAGE
 -----
@@ -55,8 +55,8 @@ new L.GeoJSON.Ajax(
 
 - Display a label when hovering the feature:
 * `popup: <string>,` // Popup text
-* `remanent: <boolean> | default=false,` // Whether or not the label remains when the mouse leaves the property area or when hovering another feature
 * `popupAnchor: [<int>, <int>] | default=[middle,top]`, // Point from which the popup should open relative to the iconAnchor
+* `popupValidity: default=100`, // The popup stay open if the mouse moves closest than this distance (pixels) 
 * `popupClass: <string>,` // Optional: CSS class to apply to the label
 
 - Action when clicking the feature:

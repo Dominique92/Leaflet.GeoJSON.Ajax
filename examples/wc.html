@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<meta name="robots" content="index, nofollow">
 	<meta name="Description" CONTENT="Toilettes, WC, GPS">
-	<link rel="icon" type="image/png" href="http://v2.chemineur.fr/prod/chemtype/toilette.png" />
+	<link rel="icon" type="image/png" href="//chemineur.fr/ext/Dominique92/GeoBB/types_points/toilette.png" />
 
 	<link  href="../src/leaflet.css" rel="stylesheet" />
 	<script src="../src/leaflet.js"></script>
@@ -59,7 +59,7 @@
 		map.setView([47, 2], 6);
 
 		// Baselayer
-		var baselayer = new L.TileLayer('http://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+		var baselayer = new L.TileLayer('//{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', { // Available on http & https
 			attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
 		});
 
@@ -81,10 +81,9 @@
 			// Icons display style
 			style: function(feature) {
 				return {
-					iconUrl: 'http://v2.chemineur.fr/test/etoile.gif',
+					iconUrl: '//chemineur.fr/ext/Dominique92/GeoBB/types_points/site.png',
 					iconAnchor: [8, 4],
-					popupClass: 'etiquette',
-					remanent: true
+					popupClass: 'etiquette'
 				};
 			}
 		});
@@ -95,7 +94,7 @@
 			maxZoom: 16
 		});
 		gps.addTo(map)
-		gps.on('gpslocated', function(e) {
+		gps.on('gps:located', function(e) {
 			if (!map.hasLayer(baselayer)) {
 				baselayer.addTo(map);
 				osm.addTo(map);
@@ -109,7 +108,7 @@
 	</script>
 
 	<!-- Doc & debug -->
-	<a href="../../Leaflet.Map.MultiVendors"
+	<a href="../../Leaflet.Map.MultiVendors-master"
 	   style="position:absolute;top:150px;right:0;text-decoration:none;font-size:large"
 	   title="Next test">
 		&#10144;

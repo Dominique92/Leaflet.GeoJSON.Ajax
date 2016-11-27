@@ -2,7 +2,7 @@ var map = new L.Map('map');
 map.setView([45.18, 5.7], 12);
 
 // Baselayer
-new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+new L.TileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
@@ -24,10 +24,9 @@ var osm = new L.GeoJSON.Ajax.OSM({
 	// Icons display style
 	style: function(feature) {
 		return {
-			iconUrl: 'http://v2.chemineur.fr/prod/chemtype/' + feature.properties.icon_name + '.png',
+			iconUrl: '//chemineur.fr/ext/Dominique92/GeoBB/types_points/' + feature.properties.icon_name + '.png',
 			iconAnchor: [8, 4],
-			popupClass: 'etiquette',
-			remanent: true
+			popupClass: 'etiquette'
 		};
 	}
 }).addTo(map);

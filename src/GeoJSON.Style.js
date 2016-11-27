@@ -9,11 +9,8 @@
  * With the great initial push from https://github.com/LeOSW42
  */
 
-/* Add setStyle function to Marker to be compatible with Poly*
- * This makes the Marker's options as style parameter
- */
 L.Marker.include({
-	setStyle: function (style) {
+	setStyle: function(style) {
 		L.setOptions(this, style);
 
 		if (this._map) {
@@ -29,7 +26,12 @@ L.GeoJSON.Style = L.GeoJSON.extend({
 	// Modify the way the layer representing one of the features is displayed
 	_setLayerStyle: function(layer, layerStyle) {
 		// Merge layer style & feature properties.
-		var style = L.extend({},
+		var style = L.extend(
+			{ // Default
+				popupAnchor: [0, -8],
+				popupClass: '',
+				popupValidity: 100
+			},
 			layer.feature.properties, // Low priority: geoJSON properties.
 			typeof layerStyle == 'function'
 				? layerStyle.call(this, layer.feature) // When layer.options.style is a function
@@ -40,48 +42,57 @@ L.GeoJSON.Style = L.GeoJSON.extend({
 		if (style.iconUrl && typeof layer.setIcon == 'function')
 			layer.setIcon(L.icon(style));
 
-		layer.on('mouseover', function(e) {
+		function onClick(e) {
+			e = e.originalEvent || e;
+			if (e.shiftKey || e.ctrlKey) // Shift + Click open the url in a new window. //TODO: doesn't work on FF
+				window.open(style.url);
+			else
+				document.location.href = style.url;
+		}
+
+		layer.on('mouseover mousemove', function(e) {
 			// Display a label when hover the feature.
 			if (style.popup) {
-				var popupAnchor = style.popupAnchor || [0, -2];
-				new(L.Rrose || L.Popup)({
-					offset: new L.Point(popupAnchor[0], popupAnchor[1]), // Avoid to cover the marker with the popup.
-					className: style.popupClass ? style.popupClass : '',
-					closeButton: false,
-					autoPan: false
-				})
-				.setContent(style.popup)
+				var popup = new(L.Rrose || L.Popup)({
+						offset: new L.Point(style.popupAnchor[0], style.popupAnchor[1]), // Avoid to cover the marker with the popup.
+						className: style.popupClass,
+						closeButton: false,
+						autoPan: false
+					});
+				popup.setContent(style.popup)
 					.setLatLng(e.latlng)
 					.openOn(this._map);
-					
-				// Close the label when moving out of the marker
-				if (style.remanent)
-					this.popupLatlng = e.latlng; // Mem the popup position to be able to delete it when moving far
-				else {
-					layer.off('mouseout', this._closePopup); // Only once
-					layer.on('mouseout', this._closePopup); // Use named function to not off all mouseout when layer off 'mouseout'
+
+				if (style.url) {
+					popup._container.style.cursor = 'pointer';
+					popup._container.addEventListener('click', onClick, false);
 				}
+
+				// Mem the popup position to be able to delete it when moving far
+				this.popupLatlng = e.latlng;
 			}
 		}, this);
 
-		// Close popups when moving > 150px far or leaving the map
-		this._map.on('mousemove mouseout', function(e) {
-			if (typeof this.popupLatlng == 'object') {
-				var popupXY = this._map.latLngToLayerPoint(this.popupLatlng),
-					dist = Math.hypot(popupXY.x - e.layerPoint.x, popupXY.y - e.layerPoint.y);
-				if (dist > 150 || e.type == 'mouseout')
-					this._map.closePopup();
-			}
-		}, this);
+		// Close popups when moving > popupValidity px far or leaving the map
+		if (this._map) {
+			if (style.popupValidity)
+				this._map.on('mousemove', function(e) {
+					if (typeof this.popupLatlng == 'object') {
+						var popupXY = this._map.latLngToLayerPoint(this.popupLatlng),
+							dist = Math.hypot(popupXY.x - e.layerPoint.x, popupXY.y - e.layerPoint.y);
+						if (dist > style.popupValidity)
+							this._closePopup();
+					}
+				}, this);
+			else
+				layer.on('mouseout', this._closePopup, this);
+
+			this._map.on('mouseout', this._closePopup, this);
+		}
 
 		// Navigate the the url when clicking a feature.
 		if (style.url)
-			layer.on('click', function(e) {
-				if (e.originalEvent.shiftKey || e.originalEvent.ctrlKey) // Shift + Click open the url in a new window. //TODO: doesn't work on FF
-					window.open(style.url);
-				else
-					document.location.href = style.url;
-			});
+			layer.on('click', onClick);
 
 		// Isolate too close markers when the mouse hovers over the group.
 		layer.on('mouseover', function(e) {
@@ -100,6 +111,7 @@ L.GeoJSON.Style = L.GeoJSON.extend({
 	_closePopup: function() {
 		if (this._map)
 			this._map.closePopup();
+		delete this.popupLatlng;
 	},
 
 	_degroup: function(p1, delta) {
@@ -119,7 +131,8 @@ L.GeoJSON.Style = L.GeoJSON.extend({
 					else
 						p2.setLatLng(
 							dp > delta ? p2._lli // If it's far, we bring it at it initial position.
-							: [ // If not, we add to the existing shift.
+							:
+							[ // If not, we add to the existing shift.
 								ll1.lat + (p2._lli.lat - ll1.lat) * delta / dp,
 								ll1.lng + (p2._lli.lng - ll1.lng) * delta / dp
 							]

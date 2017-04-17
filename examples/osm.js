@@ -1,5 +1,5 @@
 var map = new L.Map('map');
-map.setView([45.18, 5.7], 12);
+map.setView([45.18, 5.7], 13);
 
 // Baselayer
 new L.TileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

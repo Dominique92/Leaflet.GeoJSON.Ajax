@@ -16,7 +16,8 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 	options: {
 		urlGeoJSON: null, // GeoJSON server URL.
 		argsGeoJSON: {}, // GeoJSON server args.
-		idAjaxStatus: null // HTML id element owning the loading status display
+		idAjaxStatus: null, // HTML id element owning the loading status display
+		static: false
 	},
 
 	initialize: function(urlGeoJSON, options) {
@@ -52,7 +53,7 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 
 		this.reload(); // Load it at the beginning.
 
-		if (this.options.bbox) // Replay if the map moves
+		if (this.options.bbox && !this.options.static) // Replay if the map moves
 			this._map.on('moveend', this.reload, this);
 	},
 
@@ -98,7 +99,7 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 			}
 
 			// Zoom too large
-			if (this._map) {
+			if (this._map && !this.options.static) {
 				var b = this._map.getBounds();
 				if (b._northEast.lng - b._southWest.lng > this.options.maxLatAperture) {
 					this.elAjaxStatus.className = 'ajax-zoom';

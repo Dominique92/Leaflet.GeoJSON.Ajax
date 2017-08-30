@@ -36,6 +36,7 @@ new L.GeoJSON.Ajax(
 				...
 			};
 		}
+		static: Only loads data once. Usefull when loading a single geoJSON file. default: false.
 	}
 ).addTo(map);
 ```

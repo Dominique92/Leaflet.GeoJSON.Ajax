@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2016 Dominique Cavailhez
  * https://github.com/Dominique92
- * Supported both on Leaflet V0.7 & V1.0
+ * Supported both on Leaflet V0.7 & V1.+
  *
  * Ajax layers to access OpenStreetMap Overpass API http://wiki.openstreetmap.org/wiki/Overpass_API
  * Based on L.GeoJSON and L.GeoJSON.Ajax
@@ -13,7 +13,7 @@
 
 L.GeoJSON.Ajax.OSM = L.GeoJSON.Ajax.extend({
 	options: {
-		urlGeoJSON: '//api.openstreetmap.fr/oapi/interpreter',
+		urlGeoJSON: '//overpass-api.de/api/interpreter',
 		bbox: true,
 		maxLatAperture: 0.25, // (Latitude degrees) The layer will only be displayed if it's zooms to less than this latitude aperture degrees.
 		timeout: 25, // Server timeout (seconds)

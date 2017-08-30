@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2014 Dominique Cavailhez
  * https://github.com/Dominique92
- * Supported both on Leaflet V0.7 & V1.0
+ * Supported both on Leaflet V0.7 & V1.+
  *
  * Display remote layers with geoJSON format
  * Requires L.GeoJSON.Style
@@ -65,6 +65,11 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 
 	// Build the final url request to send to the server
 	_getUrl: function() {
+		var urlGeoJSON = // Thanks to https://github.com/batje
+			typeof this.options.urlGeoJSON == 'function'
+			? this.options.urlGeoJSON.call(this, this)
+			: this.options.urlGeoJSON;
+
 		var argsGeoJSON =
 			typeof this.options.argsGeoJSON == 'function'
 			? this.options.argsGeoJSON.call(this, this)
@@ -78,7 +83,7 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 		if (this.options.bbox && this._map)
 			argsGeoJSON.bbox = this._map.getBounds().toBBoxString();
 
-		return this.options.urlGeoJSON + L.Util.getParamString(argsGeoJSON);
+		return urlGeoJSON + L.Util.getParamString(argsGeoJSON);
 	},
 
 	reload: function() {

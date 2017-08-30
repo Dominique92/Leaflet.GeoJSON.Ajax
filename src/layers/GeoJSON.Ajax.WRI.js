@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2016 Dominique Cavailhez
  * https://github.com/Dominique92
- * Supported both on Leaflet V0.7 & V1.0
+ * Supported both on Leaflet V0.7 & V1.+
  *
  * geoJSON layers to access www.refuges.info geographic flows
  */

@@ -22,7 +22,7 @@ USAGE
 - Create a L.GeoJSON.Ajax instance & add it to the map.
 ```javascript
 new L.GeoJSON.Ajax(
-	<URL>, // GeoJson server URL.
+	<URL>, // GeoJson server URL or function that returns the URL
 	{
 		argsGeoJSON: {
 			name: value, // GeoJson args pairs that will be added to the url with the syntax: ?name=value&...
@@ -36,6 +36,7 @@ new L.GeoJSON.Ajax(
 				...
 			};
 		}
+		idAjaxStatus: optional html element #id that will be updated during loading of the map
 	}
 ).addTo(map);
 ```

@@ -65,6 +65,11 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 
 	// Build the final url request to send to the server
 	_getUrl: function() {
+		var urlGeoJSON =
+			typeof this.options.urlGeoJSON == 'function'
+			? this.options.urlGeoJSON.call(this, this)
+			: this.options.urlGeoJSON;
+
 		var argsGeoJSON =
 			typeof this.options.argsGeoJSON == 'function'
 			? this.options.argsGeoJSON.call(this, this)
@@ -78,7 +83,7 @@ L.GeoJSON.Ajax = L.GeoJSON.Style.extend({
 		if (this.options.bbox && this._map)
 			argsGeoJSON.bbox = this._map.getBounds().toBBoxString();
 
-		return this.options.urlGeoJSON + L.Util.getParamString(argsGeoJSON);
+		return urlGeoJSON + L.Util.getParamString(argsGeoJSON);
 	},
 
 	reload: function() {

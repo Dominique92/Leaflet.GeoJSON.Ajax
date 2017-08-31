@@ -11,9 +11,13 @@ This plugin works both on Leaflet V0.7 & V1.+
 DEMO
 ----
 See a remote geoJson simple demo [here](https://dominique92.github.io/MyLeaflet/src/Leaflet.GeoJSON.Ajax/examples/simple.html)
+
 See a demo with styling [here](https://dominique92.github.io/MyLeaflet/src/Leaflet.GeoJSON.Ajax/examples/styling.html)
+
 See a demo with styling & BBOX strategy [here](https://dominique92.github.io/MyLeaflet/src/Leaflet.GeoJSON.Ajax)
+
 See a more complex demo based on OSM Overpass API [here](https://dominique92.github.io/MyLeaflet/src/Leaflet.GeoJSON.Ajax/examples/osm.html)
+
 See a demo using Leaflet V0.7 [here](https://dominique92.github.io/MyLeaflet/src/Leaflet.GeoJSON.Ajax/examples/v0.7.html)
 
 USAGE

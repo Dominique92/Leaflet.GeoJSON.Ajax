@@ -46,6 +46,7 @@ L.GeoJSON.Ajax = _lgaInherit.extend({
 		}
 		this.ajaxRequest.context = this; // Reference the layer object for further usage.
 		this.ajaxRequest.onreadystatechange = this._onreadystatechange; // Action when receiving data
+
 	},
 
 	onAdd: function(map) {
@@ -167,6 +168,9 @@ L.GeoJSON.Ajax = _lgaInherit.extend({
 				this.elAjaxStatus.className =
 				js.length || (js.features && js.features.length) ? 'ajax-some' : 'ajax-zero';
 		}
+    if (this._map && !this.options.bbox && this.options.autosetbounds) {
+      this._map.fitBounds(this.getBounds());
+    }
 	},
 
 	// Perform a special calculation if necessary (used by OSM overpass)

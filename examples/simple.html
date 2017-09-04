@@ -3,11 +3,11 @@
 <head>
 	<title>Leaflet plugin for remote GeoJSON layers</title>
 	<meta charset="utf-8">
-	<link rel="icon" type="image/png" href="http://leafletjs.com/docs/images/favicon.ico" />
+	<link rel="icon" type="image/png" href="//leafletjs.com/docs/images/favicon.ico" />
 
 	<!-- Leaflet kernel -->
-	<link  href="https://npmcdn.com/leaflet/dist/leaflet.css" rel="stylesheet" />
-	<script src="https://npmcdn.com/leaflet/dist/leaflet-src.js"></script>
+	<link  href="//npmcdn.com/leaflet/dist/leaflet.css" rel="stylesheet" />
+	<script src="//npmcdn.com/leaflet/dist/leaflet-src.js"></script>
 
 	<!-- Ajax part of this plugin -->
 	<script src="../src/GeoJSON.Ajax.js"></script>
@@ -47,11 +47,13 @@
 					attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
 				}),
 				new L.GeoJSON.Ajax({
-					urlGeoJSON: 'capitals.json'
+					urlGeoJSON: 'capitals.json',
+          autosetbounds: true,
 				})
 			],
-			center: [39.74, -93.47],
-			zoom: 3
+      // Even though autosetbounds == true we must provide a center + zoom upon creation of the map
+      center: [0,0],
+			zoom: 1
 		});
 	</script>
 </body>

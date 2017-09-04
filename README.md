@@ -1,5 +1,5 @@
-Leaflet.GeoJSON.Ajax
-====================
+# Leaflet.GeoJSON.Ajax
+
 Leaflet plugin for remote geoJson layers (Markers, Polylines, Polygons, ...) using AJAX.
 
 Get collection of features from a remote `<URL>` & display it into the map with related & parametrables markers, lines & polygons.
@@ -8,8 +8,8 @@ Add customized markers, popup labels & click to navigate to external urls.
 
 This plugin works both on Leaflet V0.7 & V1.+
 
-DEMO
-----
+## DEMO
+
 See a remote geoJson simple demo [here](https://dominique92.github.io/MyLeaflet/src/Leaflet.GeoJSON.Ajax/examples/simple.html)
 
 See a demo with styling [here](https://dominique92.github.io/MyLeaflet/src/Leaflet.GeoJSON.Ajax/examples/styling.html)
@@ -20,12 +20,14 @@ See a more complex demo based on OSM Overpass API [here](https://dominique92.git
 
 See a demo using Leaflet V0.7 [here](https://dominique92.github.io/MyLeaflet/src/Leaflet.GeoJSON.Ajax/examples/v0.7.html)
 
-USAGE
------
+## USAGE
+
 ### For a geoJson remote URL:
+
 - Include L.GeoJSON.Style
 - Include L.GeoJSON.Ajax
 - Create a L.GeoJSON.Ajax instance & add it to the map.
+
 ```javascript
 new L.GeoJSON.Ajax(
 	<URL>, // GeoJson server URL or function that returns the URL
@@ -35,6 +37,7 @@ new L.GeoJSON.Ajax(
 			...
 		}
 		bbox: <boolean>, // Optional: whether or not add bbox arg to the geoJson server URL
+		autosetBounds: <boolean>, // Default: false. Automatically zooms to extend of loaded data. Only applies when bbox is not set.
 		style: function(feature) { // Optional
 			return {
 				"<NAME>": <VALUE>, // Properties pairs that will overwrite the geoJson flow features properties
@@ -48,31 +51,38 @@ new L.GeoJSON.Ajax(
 ```
 
 ### Properties pairs `"<NAME>":<VALUE>` can be:
+
 Markers:
-* `iconUrl: <string>,` // Url of icon image or inline 'data:image/png;base64,...'
-* `iconSize: [<int>, <int>] | default=img file size,` // Size of the icon.
-* `iconAnchor: [<int>, <int>] | default=[middle,top],` // Point of the icon which will correspond to marker's location
-* `degroup: <int>,` // Isolate too close markers by a number of pixels when the mouse hover over the group.
-* Or any of the following [L.Marker options](http://leafletjs.com/reference-1.2.0.html#marker)
+
+- `iconUrl: <string>,` // Url of icon image or inline 'data:image/png;base64,...'
+- `iconSize: [<int>, <int>] | default=img file size,` // Size of the icon.
+- `iconAnchor: [<int>, <int>] | default=[middle,top],` // Point of the icon which will correspond to marker's location
+- `degroup: <int>,` // Isolate too close markers by a number of pixels when the mouse hover over the group.
+- Or any of the following [L.Marker options](http://leafletjs.com/reference-1.2.0.html#marker)
 
 Polylines & polygons:
-* Any of the following [L.Path options](http://leafletjs.com/reference-1.2.0.html#path)
+
+- Any of the following [L.Path options](http://leafletjs.com/reference-1.2.0.html#path)
 
 Display a label when hovering the feature:
-* `popup: <string>,` // Popup text
-* `popupAnchor: [<int>, <int>] | default=[middle,top]`, // Point from which the popup should open relative to the iconAnchor
-* `popupValidity: default=100`, // The popup stay open if the mouse moves closest than this distance (pixels) 
-* `popupClass: <string>,` // Optional: CSS class to apply to the label
+
+- `popup: <string>,` // Popup text
+- `popupAnchor: [<int>, <int>] | default=[middle,top]`, // Point from which the popup should open relative to the iconAnchor
+- `popupValidity: default=100`, // The popup stay open if the mouse moves closest than this distance (pixels)
+- `popupClass: <string>,` // Optional: CSS class to apply to the label
 
 Action when clicking the feature:
-* `url: <string>,` // Url where to navigate when the feature is clicked
+
+- `url: <string>,` // Url where to navigate when the feature is clicked
 
 Misc:
-* zoom: true, // Add &zoom=000 parameter to the ajax request sent to the server, correspondins to the current zoom of the map
+
+- zoom: true, // Add &zoom=000 parameter to the ajax request sent to the server, correspondins to the current zoom of the map
 
 Or any of the following [L.GeoJSON options](http://leafletjs.com/reference-1.2.0.html#geojson)
 
-### <geoJson> The URL response must respect the [geoJson format](http://geojson.org/geojson-spec.html):
+### <geojson> The URL response must respect the <a href="http://geojson.org/geojson-spec.html">geoJson format</a>:</geojson>
+
 ```javascript
 {
 	"type": "Feature",
@@ -89,7 +99,9 @@ Or any of the following [L.GeoJSON options](http://leafletjs.com/reference-1.2.0
 ```
 
 ### Display local geoJson data with local style:
-You can use the previously defined styles options on local geoJson data while expanding L.GeoJSON.Style 
+
+You can use the previously defined styles options on local geoJson data while expanding L.GeoJSON.Style
+
 ```javascript
 new L.GeoJSON.Style(
 	<geoJSON>, // <String> geoJson features
@@ -108,8 +120,9 @@ new L.GeoJSON.Style(
 ```
 
 ### Notes:
-* Code example: [GeoJSON.Ajax.WRI.js](https://github.com/Dominique92/Leaflet.GeoJSON.Ajax/blob/master/src/layers/GeoJSON.Ajax.WRI.js)
 
-* Layer to display [OSM overpass](http://wiki.openstreetmap.org/wiki/Overpass_API) Points Of Interest: [GeoJSON.Ajax.OSM.js](https://github.com/Dominique92/Leaflet.GeoJSON.Ajax/blob/master/src/layers/GeoJSON.Ajax.OSM.js)
+- Code example: [GeoJSON.Ajax.WRI.js](https://github.com/Dominique92/Leaflet.GeoJSON.Ajax/blob/master/src/layers/GeoJSON.Ajax.WRI.js)
 
-* You will get better popup labels, including centering effects for icons close to the map limit, including [Leaflet rrose](https://github.com/erictheise/rrose). (Just include the .css & .js files).
+- Layer to display [OSM overpass](http://wiki.openstreetmap.org/wiki/Overpass_API) Points Of Interest: [GeoJSON.Ajax.OSM.js](https://github.com/Dominique92/Leaflet.GeoJSON.Ajax/blob/master/src/layers/GeoJSON.Ajax.OSM.js)
+
+- You will get better popup labels, including centering effects for icons close to the map limit, including [Leaflet rrose](https://github.com/erictheise/rrose). (Just include the .css & .js files).

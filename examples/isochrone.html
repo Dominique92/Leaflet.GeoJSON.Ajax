@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<title>Leaflet plugin for remote GeoJSON layers - Mapzen Isochrones Demo</title>
+	<meta charset="utf-8">
+	<link rel="icon" type="image/png" href="//leafletjs.com/docs/images/favicon.ico" />
+
+	<!-- Leaflet kernel -->
+	<link  href="//npmcdn.com/leaflet/dist/leaflet.css" rel="stylesheet" />
+	<script src="//npmcdn.com/leaflet/dist/leaflet-src.js"></script>
+
+  <!-- Standard Leaflet document layout -->
+  <link  href="//leafletjs.com/docs/css/main.css" rel="stylesheet" />
+
+	<!-- Ajax part of this plugin -->
+  <link  href="demos.css" rel="stylesheet"/>
+	<script src="../src/GeoJSON.Ajax.js"></script>
+  <script src="../src/layers/GeoJSON.Ajax.MapzenIsochrone.js"></script>
+  <script src="../src/layers/GeoJSON.Ajax.MapzenIsochroneGroup.js"></script>
+
+</head>
+
+<body>
+  <h1>Mapzen Isochrones Demo</h1>
+  <p>Leaflet plugin showing <a href="https://mapzen.com/blog/introducing-isochrone-service/" />Mapzen Isochrones</a>. Click the map to load Isochrones. This demo runs on Leaflet V<script>document.write(L.version)</script></p>
+
+  <p><label>You need a Mapzen API Key:</label><input id="mapzenapi" name="mapzenapi" size="15" value=""></input> (<a href="https://mapzen.com/documentation/overview/api-keys/">&#8505;</a>)</p>
+
+	<!-- Map block -->
+	<div id="map" style="width: 100%; height: 500px"></div>
+  <div id="ajax-status">
+    Load status:
+    <span id="ajax-zoom">Zoom to see more points</span>
+    <span id="ajax-wait">Loading...</span>
+    <span id="ajax-some">Loaded.</span>
+    <span id="ajax-zero">Nothing to see.</span>
+  </div>
+
+	<!-- Doc & debug -->
+  <h2>Demos</h2>
+  <ul>
+    <li>Simple <a href="simple.html">Static GeoJSON</a> file</a>.</li>
+  	<li>Dynamic <a href="styling.html">styling</a>.</li>
+	  <li><a href="..">Styling &amp; BBOX strategy</a>.</li>
+    <li>Dynamic mapping using data from the <a href="osm.html">OpenStreetMap Overpass API</a>.</li>
+    <li>Loading multiple <a href="isochroneMultiple.html">Mapzen Isochrones from a GeoJSON layer</a> for example
+      to analyse network coverage.</li>
+  </ul>
+  <p>Sources &amp; docs on <a href= "https://github.com/Dominique92/Leaflet.GeoJSON.Ajax">Github: Dominique92/Leaflet.GeoJSON.Ajax</a></p>
+	<p>Visit my fully integrated <a href= "https://github.com/Dominique92/MyLeaflet">Dominique92/MyLeaflet</a> library</p>
+
+	<a href="https://github.com/Dominique92/Leaflet.GeoJSON.Ajax"
+	   style="position:absolute;top:0;right:0"
+	   title="Sources &amp; docs">
+		<img src="../../../examples/forkme.png" />
+	</a>
+	<a href="isochroneMultiple.html"
+	   style="position:absolute;top:200px;right:0;text-decoration:none;font-size:large"
+	   title="Multiple Isochrones">
+		&#10144;
+	</a>
+
+	<!-- Insert the javascript after all <div> are defined -->
+  <script src="isochrone.js"></script>
+  <script >
+    addClick();
+  </script>
+
+</body>
+</html>

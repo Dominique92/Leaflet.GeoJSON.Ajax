@@ -1,0 +1,36 @@
+ /* For loading status */
+  /* Status icon */
+  #ajax-status * {
+    display: none;
+  }
+  #ajax-status div {
+    float: none;
+  }
+  .ajax-none #ajax-none,
+  .ajax-wait #ajax-wait,
+  .ajax-zoom #ajax-zoom,
+  .ajax-some #ajax-some,
+  .ajax-zero #ajax-zero,
+  .ajax-too #ajax-too,
+  .ajax-error #ajax-error {
+    display: initial !important;
+  }
+  
+  .ajax-none {
+    background-color: grey;
+  }
+  .ajax-wait {
+    background-color: orange;
+  }
+
+  .ajax-error {
+    background-color: red
+  }
+
+  .ajax-some {
+    background-color: green;
+  }
+
+  .ajax-zero {
+    background-color: white;
+  }

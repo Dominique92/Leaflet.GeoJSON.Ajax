@@ -28,6 +28,7 @@ See a demo using Leaflet V0.7 [here](https://dominique92.github.io/MyLeaflet/src
 - Include L.GeoJSON.Ajax
 - Create a L.GeoJSON.Ajax instance & add it to the map.
 
+<<<<<<< HEAD
   ```javascript
   new L.GeoJSON.Ajax(
     <URL>, // GeoJson server URL or function that returns the URL
@@ -49,6 +50,29 @@ See a demo using Leaflet V0.7 [here](https://dominique92.github.io/MyLeaflet/src
     }
   ).addTo(map);
   ```
+=======
+```javascript
+new L.GeoJSON.Ajax(
+	<URL>, // GeoJson server URL or function that returns the URL
+	{
+		argsGeoJSON: {
+			name: value, // GeoJson args pairs that will be added to the url with the syntax: ?name=value&...
+			...
+		}
+		bbox: <boolean>, // Optional: whether or not add bbox arg to the geoJson server URL
+		autosetBounds: <boolean>, // Default: false. Automatically zooms to extend of loaded data. Only applies when bbox is not set.
+		style: function(feature) { // Optional
+			return {
+				"<NAME>": <VALUE>, // Properties pairs that will overwrite the geoJson flow features properties
+				"<NAME>": feature.properties.<NAME>, // The value can be calculated from any geoJson property for each features.
+				...
+			};
+		}
+		idAjaxStatus: optional html element #id that will be updated during loading of the map
+	}
+).addTo(map);
+```
+>>>>>>> a568c8e47010193fd40e3aa194e17ec435749e9a
 
 ### Properties pairs `"<NAME>":<VALUE>` can be:
 

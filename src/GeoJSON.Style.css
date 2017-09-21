@@ -11,8 +11,8 @@
 	box-shadow: none;
 }
 .leaflet-rrose-tip-container {
-    margin-top: -5px;
-    margin-bottom: -5px;
+	margin-top: -5px;
+	margin-bottom: -5px;
 }
 
 /* Style for Control.Layers.argsGeoJSON */

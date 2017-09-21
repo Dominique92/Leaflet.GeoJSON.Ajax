@@ -168,9 +168,14 @@ L.GeoJSON.Ajax = _lgaInherit.extend({
 				this.elAjaxStatus.className =
 				js.length || (js.features && js.features.length) ? 'ajax-some' : 'ajax-zero';
 		}
+<<<<<<< HEAD
     if (this._map && !this.options.bbox && this.options.autosetbounds) {
       this._map.fitBounds(this.getBounds());
     }
+=======
+		if (this._map && !this.options.bbox && this.options.autosetBounds)
+			this._map.fitBounds(this.getBounds());
+>>>>>>> a568c8e47010193fd40e3aa194e17ec435749e9a
 	},
 
 	// Perform a special calculation if necessary (used by OSM overpass)

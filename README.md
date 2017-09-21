@@ -20,6 +20,10 @@ See a more complex demo based on OSM Overpass API [here](https://dominique92.git
 
 See a demo using Leaflet V0.7 [here](https://dominique92.github.io/MyLeaflet/src/Leaflet.GeoJSON.Ajax/examples/v0.7.html)
 
+See a demo loading Mapzen Isochrones by [clicking the map](examples/isochrone.html)
+
+See a demo loading multiple [Mapzen Isochrones from a GeoJSON layer](examples/isochroneMultiple.html).
+
 ## USAGE
 
 ### For a geoJson remote URL:
@@ -30,23 +34,23 @@ See a demo using Leaflet V0.7 [here](https://dominique92.github.io/MyLeaflet/src
 
 ```javascript
 new L.GeoJSON.Ajax(
-	<URL>, // GeoJson server URL or function that returns the URL
-	{
-		argsGeoJSON: {
-			name: value, // GeoJson args pairs that will be added to the url with the syntax: ?name=value&...
-			...
-		}
-		bbox: <boolean>, // Optional: whether or not add bbox arg to the geoJson server URL
-		autosetBounds: <boolean>, // Default: false. Automatically zooms to extend of loaded data. Only applies when bbox is not set.
-		style: function(feature) { // Optional
-			return {
-				"<NAME>": <VALUE>, // Properties pairs that will overwrite the geoJson flow features properties
-				"<NAME>": feature.properties.<NAME>, // The value can be calculated from any geoJson property for each features.
-				...
-			};
-		}
-		idAjaxStatus: optional html element #id that will be updated during loading of the map
-	}
+    <URL>, // GeoJson server URL or function that returns the URL
+    {
+        argsGeoJSON: {
+            name: value, // GeoJson args pairs that will be added to the url with the syntax: ?name=value&...
+            ...
+        }
+        bbox: <boolean>, // Optional: whether or not add bbox arg to the geoJson server URL
+        autosetBounds: <boolean>, // Default: false. Automatically zooms to extend of loaded data. Only applies when bbox is not set.
+        style: function(feature) { // Optional
+            return {
+                "<NAME>": <VALUE>, // Properties pairs that will overwrite the geoJson flow features properties
+                "<NAME>": feature.properties.<NAME>, // The value can be calculated from any geoJson property for each features.
+                ...
+            };
+        }
+        idAjaxStatus: optional html element #id that will be updated during loading of the map
+    }
 ).addTo(map);
 ```
 
@@ -85,16 +89,16 @@ Or any of the following [L.GeoJSON options](http://leafletjs.com/reference-1.2.0
 
 ```javascript
 {
-	"type": "Feature",
-	"geometry":
-	{
-		<geoJson geometry>...
-	},
-	"properties":
-	{
-		"<NAME>": <VALUE>, // Properties pairs that can be overloaded by the GeoJSON options or style
-		...
-	}
+    "type": "Feature",
+    "geometry":
+    {
+        <geoJson geometry>...
+    },
+    "properties":
+    {
+        "<NAME>": <VALUE>, // Properties pairs that can be overloaded by the GeoJSON options or style
+        ...
+    }
 }
 ```
 
@@ -104,18 +108,18 @@ You can use the previously defined styles options on local geoJson data while ex
 
 ```javascript
 new L.GeoJSON.Style(
-	<geoJSON>, // <String> geoJson features
-	{
-		<OPTIONS>,
-		"<NAME>": <VALUE>, // Optional: Properties pairs that will overwrite the geoJson flow features properties
-		style: function(feature) { // Optional
-			return {
-				"<NAME>": <VALUE>, // Properties pairs that will overwrite the geoJson flow features properties
-				"<NAME>": feature.properties.<NAME>, // The value can be calculated from any geoJson property for each features.
-				...
-			};
-		}
-	}
+    <geoJSON>, // <String> geoJson features
+    {
+        <OPTIONS>,
+        "<NAME>": <VALUE>, // Optional: Properties pairs that will overwrite the geoJson flow features properties
+        style: function(feature) { // Optional
+            return {
+                "<NAME>": <VALUE>, // Properties pairs that will overwrite the geoJson flow features properties
+                "<NAME>": feature.properties.<NAME>, // The value can be calculated from any geoJson property for each features.
+                ...
+            };
+        }
+    }
 ).addTo(map);
 ```
 

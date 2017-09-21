@@ -46,6 +46,7 @@ L.GeoJSON.Ajax = _lgaInherit.extend({
 		}
 		this.ajaxRequest.context = this; // Reference the layer object for further usage.
 		this.ajaxRequest.onreadystatechange = this._onreadystatechange; // Action when receiving data
+
 	},
 
 	onAdd: function(map) {
